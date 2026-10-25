@@ -1,8 +1,7 @@
 'use client';
 
 import type { ColumnDef } from '@tanstack/react-table';
-import { Edit, MoreHorizontal, Trash2, Package, Star, Calendar, Image as ImageIcon, Eye } from 'lucide-react';
-import { useRouter } from 'next/navigation';
+import { Edit, MoreHorizontal, Trash2, Package, Star, Eye } from 'lucide-react';
 import Image from 'next/image';
 import { useState } from 'react';
 import { Badge } from '@/components/ui/badge';
@@ -14,7 +13,6 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import type { IEquipment } from '@/types/equipments/equipment.type';
-import { EquipmentType } from '@/types/equipments/equipment.enum';
 import Link from 'next/link';
 
 function formatEquipmentType(type: string) {
@@ -30,24 +28,24 @@ function EquipmentNameCell({ equipment }: { equipment: IEquipment }) {
   return (
     <div className="flex items-center gap-3">
       {equipment.coverPath && !imageError ? (
-        <div className="bg-muted flex h-10 w-10 items-center justify-center overflow-hidden rounded-lg">
+        <div className="bg-muted relative size-11 shrink-0 overflow-hidden">
           <Image
             src={equipment.coverPath}
             alt={equipment.name}
-            width={40}
-            height={40}
-            className="h-full w-full object-cover"
+            fill
+            sizes="44px"
+            className="object-cover"
             onError={() => setImageError(true)}
           />
         </div>
       ) : (
-        <div className="bg-primary/10 flex h-10 w-10 items-center justify-center rounded-lg">
+        <div className="bg-primary/10 flex size-11 shrink-0 items-center justify-center">
           <Package className="text-primary h-5 w-5" />
         </div>
       )}
       <div>
         <div className="font-medium">{equipment.name || equipment.slug}</div>
-        <div className="text-muted-foreground text-sm">ID: {equipment.id}</div>
+        <div className="text-muted-foreground text-xs">{equipment.slug}</div>
       </div>
     </div>
   );
@@ -57,8 +55,6 @@ export function useEquipmentColumns(opts: {
   onDelete: (equipment: IEquipment) => void;
 }): ColumnDef<IEquipment>[] {
   const { onDelete } = opts;
-
-  const router = useRouter();
 
   return [
     // Equipment name
@@ -92,7 +88,7 @@ export function useEquipmentColumns(opts: {
       enableSorting: false,
       cell: ({ row }) => {
         const equipment = row.original;
-        return <div className="text-muted-foreground text-sm">Category ID: {equipment.category.name}</div>;
+        return <div className="text-sm">{equipment.category?.name || '—'}</div>;
       },
     },
     // Brand
@@ -102,7 +98,7 @@ export function useEquipmentColumns(opts: {
       enableSorting: false,
       cell: ({ row }) => {
         const equipment = row.original;
-        return <div className="text-muted-foreground text-sm">Brand ID: {equipment.brand.name}</div>;
+        return <div className="text-sm">{equipment.brand?.name || '—'}</div>;
       },
     },
     // Summary
@@ -148,6 +144,7 @@ export function useEquipmentColumns(opts: {
         const equipment = row.original;
 
         return (
+          <div onClick={event => event.stopPropagation()}>
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <Button variant="ghost" className="h-8 w-8 p-0">
@@ -173,6 +170,7 @@ export function useEquipmentColumns(opts: {
               </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
+          </div>
         );
       },
     },

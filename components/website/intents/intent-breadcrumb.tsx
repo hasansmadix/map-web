@@ -19,17 +19,17 @@ export function IntentBreadcrumb({ breadcrumbs }: IntentBreadcrumbProps) {
 
   return (
     <Breadcrumb>
-      <BreadcrumbList>
+      <BreadcrumbList className="flex-nowrap overflow-hidden text-[13px] text-muted-foreground">
         {breadcrumbs.map((crumb, index) => {
           const isLast = index === breadcrumbs.length - 1;
           return (
             <Fragment key={crumb.slug}>
-              {index > 0 && <BreadcrumbSeparator>/</BreadcrumbSeparator>}
-              <BreadcrumbItem>
+              {index > 0 ? <BreadcrumbSeparator className="text-muted-foreground/40">/</BreadcrumbSeparator> : null}
+              <BreadcrumbItem className={isLast ? 'min-w-0' : 'shrink-0'}>
                 {isLast ? (
-                  <BreadcrumbPage>{crumb.label}</BreadcrumbPage>
+                  <BreadcrumbPage className="truncate font-normal text-foreground">{crumb.label}</BreadcrumbPage>
                 ) : (
-                  <BreadcrumbLink asChild>
+                  <BreadcrumbLink asChild className="hover:text-foreground">
                     <Link href={crumb.url}>{crumb.label}</Link>
                   </BreadcrumbLink>
                 )}

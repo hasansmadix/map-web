@@ -2,7 +2,8 @@ import Link from 'next/link';
 import { cn } from '@/lib/utils';
 import type { BroadcastUnit } from '@/types/broadcasts/broadcasts.types';
 import DivHtml from '@/components/shared/div-html';
-import { ArrowRight, Package, CheckCircle2, Info } from 'lucide-react';
+import { ArrowRight, CheckCircle2, Info } from 'lucide-react';
+import { UnitCardVisual } from '@/components/website/broadcasts/unit/unit-visual';
 import Image from 'next/image';
 import { Badge } from '@/components/ui/badge';
 function formatBroadcastType(type: string): string {
@@ -28,14 +29,14 @@ export function BroadcastUnitRowCard({ unit, className }: BroadcastUnitRowCardPr
     <Link
       href={href}
       className={cn(
-        'group relative block overflow-hidden rounded-xl border border-border/60 bg-muted/20',
+        'group relative block overflow-hidden border border-border bg-card',
         'flex flex-col transition-colors md:flex-row',
-        'hover:bg-muted/30 hover:border-primary/30',
+        'hover:border-primary',
         className,
       )}
     >
       {/* Cover Image - Left Side */}
-      {unit.gallery?.[0]?.path && (
+      {unit.gallery?.[0]?.path ? (
         <div className="relative h-56 w-full shrink-0 overflow-hidden md:h-auto md:w-72 md:shrink-0">
           <Image
             src={unit.gallery[0].path}
@@ -46,6 +47,8 @@ export function BroadcastUnitRowCard({ unit, className }: BroadcastUnitRowCardPr
           />
           <div className="absolute inset-0 bg-linear-to-t from-black/60 via-transparent to-transparent md:hidden" />
         </div>
+      ) : (
+        <UnitCardVisual unit={unit} />
       )}
 
       {/* Content - Right Side */}
@@ -66,9 +69,6 @@ export function BroadcastUnitRowCard({ unit, className }: BroadcastUnitRowCardPr
             <h3 className="text-foreground group-hover:text-primary mb-2 text-lg font-semibold transition-colors md:text-xl">
               {unit.title || unit.slug}
             </h3>
-          </div>
-          <div className="bg-primary/10 flex h-10 w-10 shrink-0 items-center justify-center rounded-lg transition-colors group-hover:bg-primary/15">
-            <Package className="text-primary h-5 w-5" />
           </div>
         </div>
 

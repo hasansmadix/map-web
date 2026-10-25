@@ -10,11 +10,12 @@ import { Menu } from 'lucide-react';
 import { navigationLinks } from './data';
 import { MobileMediaProductionAccordion } from './media-production-accordion';
 import { MobileBroadcastAccordion } from './broadcast-accordion';
+import { MobileEquipmentAccordion } from './equipment-rental-accordion';
 
 import { usePathname } from 'next/navigation';
 import { VisuallyHidden } from '@/components/ui/visually-hidden';
 
-function NavigationSheet() {
+function NavigationSheet({ onDark = false }: { onDark?: boolean }) {
   const [open, setOpen] = useState(false);
   const pathname = usePathname();
 
@@ -25,7 +26,11 @@ function NavigationSheet() {
   return (
     <Sheet open={open} onOpenChange={setOpen}>
       <SheetTrigger asChild>
-        <Button variant="outline" size="icon" className="cursor-pointer rounded-full lg:hidden">
+        <Button
+          variant="outline"
+          size="icon"
+          className={`cursor-pointer lg:hidden ${onDark ? 'border-white/30 bg-transparent text-white hover:bg-white/10 hover:text-white' : ''}`}
+        >
           <Menu className="h-5 w-5" />
           <span className="sr-only">Open Menu</span>
         </Button>
@@ -40,7 +45,7 @@ function NavigationSheet() {
           <div className="flex items-center justify-between border-b p-4">
             <h2 className="text-lg font-semibold">Navigation Menu</h2>
             {/* <SheetClose asChild>
-              <Button variant="ghost" size="icon" className="h-8 w-8 rounded-full">
+              <Button variant="ghost" size="icon" className="h-8 w-8">
                 <X className="h-4 w-4" />
                 <span className="sr-only">Close Menu</span>
               </Button>
@@ -57,6 +62,14 @@ function NavigationSheet() {
                 // Skip Photography from regular links as it's handled separately
                 if (link.href === '/solutions/photography') {
                   return null;
+                }
+
+                if (link.href === '/equipment-rental') {
+                  return (
+                    <li key={link.label}>
+                      <MobileEquipmentAccordion onLinkClick={handleLinkClick} />
+                    </li>
+                  );
                 }
 
                 return (

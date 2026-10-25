@@ -1,17 +1,15 @@
 import { type Metadata } from 'next';
+import { PageHeader } from '@/components/dashboard/page-header';
 import StaffTable from '@/components/dashboard/staff/staff-table';
 
 export const metadata: Metadata = {
-  title: 'Staff Management',
+  title: 'Staff',
 };
 
 export default async function StaffPage() {
   return (
-    <div className="space-y-6 p-4">
-      <header>
-        <h1 className="text-3xl font-bold tracking-tight">Staff Management</h1>
-        <p className="text-muted-foreground">Manage your staff members</p>
-      </header>
+    <div className="map-page">
+      <PageHeader title="Staff" description="People who can sign in to the dashboard." />
 
       <StaffTable />
     </div>

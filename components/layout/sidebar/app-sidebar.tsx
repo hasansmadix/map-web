@@ -5,6 +5,7 @@ import Link from 'next/link';
 
 import { NavMain } from '@/components/layout/sidebar/nav-main';
 import { NavUser } from '@/components/layout/sidebar/nav-user';
+import { Separator } from '@/components/ui/separator';
 import { Sidebar, SidebarContent, SidebarFooter, SidebarHeader, SidebarRail } from '@/components/ui/sidebar';
 import { navMain } from './links';
 
@@ -18,6 +19,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
           <Image src="/logo.png" alt="MAP Logo" width={130} height={40} className="h-8 w-auto" priority />
         </Link>
       </SidebarHeader>
+      <Separator />
       <SidebarContent>
         <NavMain items={navMain} />
       </SidebarContent>

@@ -3,11 +3,10 @@
 import { useFormContext } from 'react-hook-form';
 import { TextInput } from '@/components/shared/input/TextInput';
 import { TextAreaInput } from '@/components/shared/input/TextAreaInput';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { fieldLabelClassName } from '@/components/shared/input/field-styles';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
 import { X, Plus } from 'lucide-react';
 import { useState } from 'react';
 
@@ -19,7 +18,7 @@ export function MetaInformationSection() {
   const addKeyword = () => {
     const keyword = newKeyword.trim();
     if (keyword && !keywords.includes(keyword)) {
-      setValue('meta.keywords', [...keywords, keyword]);
+      setValue('meta.keywords', [...keywords, keyword], { shouldDirty: true });
       setNewKeyword('');
     }
   };
@@ -28,27 +27,22 @@ export function MetaInformationSection() {
     setValue(
       'meta.keywords',
       keywords.filter((k: string) => k !== keyword),
+      { shouldDirty: true },
     );
   };
 
   return (
-    <Card>
-      <CardHeader>
-        <CardTitle>Meta Information</CardTitle>
-      </CardHeader>
-      <CardContent className="space-y-4">
-        <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
-          <TextInput control={control} name="meta.title" label="Meta Title" placeholder="Enter meta title" />
-        </div>
+    <div className="space-y-4">
+        <TextInput control={control} name="meta.title" label="Meta title" placeholder="The search result title" />
         <TextAreaInput
           control={control}
           name="meta.description"
-          label="Meta Description"
-          placeholder="Enter meta description"
+          label="Meta description"
+          placeholder="The search result description"
           rows={3}
         />
         <div className="space-y-2">
-          <Label htmlFor="keywords">Keywords</Label>
+          <p className={fieldLabelClassName}>Keywords</p>
           <div className="flex gap-2">
             <Input
               id="keywords"
@@ -80,7 +74,6 @@ export function MetaInformationSection() {
             ))}
           </div>
         </div>
-      </CardContent>
-    </Card>
+    </div>
   );
 }

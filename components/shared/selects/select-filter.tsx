@@ -40,9 +40,15 @@ export function SelectFilter<T = string>({
 
   const displayValue = value === undefined ? 'all' : String(value);
 
+  const isActive = value !== undefined && String(value) !== 'all' && String(value) !== ''
+
   return (
     <Select value={displayValue} onValueChange={handleValueChange} disabled={disabled}>
-      <SelectTrigger className={`h-9 ${className}`}>
+      <SelectTrigger
+        data-field-control
+        data-filter-active={isActive ? 'true' : undefined}
+        className={className}
+      >
         {showFilterIcon && <Filter className="mr-2 h-4 w-4" />}
         <SelectValue placeholder={placeholder} />
       </SelectTrigger>

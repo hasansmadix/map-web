@@ -100,7 +100,9 @@ export function BrandSelector({
           role="combobox"
           aria-expanded={open}
           disabled={disabled || isPending}
-          className={cn('w-full justify-between', !value && 'text-muted-foreground', className)}
+          data-field-control
+          data-filter-active={value ? 'true' : undefined}
+          className={cn('w-full justify-between font-light', !value && 'text-muted-foreground', className)}
         >
           <span className="truncate">
             {selectedOption ? selectedOption.label : placeholder || 'Select brand'}

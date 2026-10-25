@@ -43,7 +43,7 @@ export async function generateAboutPageSchema(): Promise<{
       url: currentURL,
       name: `About Us | ${siteName}`,
       description:
-        'Learn more about MAP Production, the leading media solutions provider in Dubai Studio City.',
+        'Learn more about MAP Production, the leading media solutions provider in Dubai Production City.',
       mainEntity: { '@id': organizationId },
     },
     currentURL,

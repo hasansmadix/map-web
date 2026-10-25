@@ -1,33 +1,21 @@
 'use client';
 
-import { zodResolver } from '@hookform/resolvers/zod';
-
-import { useState } from 'react';
-import { useForm } from 'react-hook-form';
-import { toast } from 'sonner';
+import ResponseError from '@/components/shared/response-error';
+import { LoadingButton } from '@/components/shared/buttons/loading-button';
 import { Button } from '@/components/ui/button';
-import EquipmentBrandFormFields from './equipment-brand-form-fields';
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-} from '@/components/ui/dialog';
+import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Form } from '@/components/ui/form';
-
 import { useEquipmentBrandMutations } from '@/hooks/api/equipments/equipment-brands/mutations';
-
+import type { IEquipmentBrand } from '@/types/equipments/equipment-brand.type';
+import { getChangedValues } from '@/utils/format';
 import {
   updateEquipmentBrandSchema,
   type TUpdateEquipmentBrandForm,
 } from '@/validations/equipments/brands/update-equipment-brand.schema';
-import { LoadingButton } from '@/components/shared/buttons/loading-button';
-import type { IEquipmentBrand } from '@/types/equipments/equipment-brand.type';
-import { getChangedValues } from '@/utils/format';
-import { Separator } from '@/components/ui/separator';
-import ResponseError from '@/components/shared/response-error';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { useForm } from 'react-hook-form';
+import { toast } from 'sonner';
+import EquipmentBrandFormFields from './equipment-brand-form-fields';
 
 interface EditEquipmentBrandFormProps {
   isOpen: boolean;
@@ -52,42 +40,40 @@ function EditEquipmentBrandForm({ isOpen, onClose, brand }: EditEquipmentBrandFo
     const changedValues = getChangedValues(form.formState.defaultValues as TUpdateEquipmentBrandForm, data);
 
     if (!Object.keys(changedValues).length) {
-      toast.error('No changes to update');
+      toast.error('No changes to save');
       return;
     }
 
     try {
       await update.mutateAsync({ id: brand.id, data: changedValues });
-      toast.success('Equipment brand updated successfully');
-
+      toast.success('Brand saved');
       onClose();
     } catch (error) {
-      const errorMessage = (error as Error)?.message || 'Failed to update equipment brand';
-      toast.error(errorMessage);
+      toast.error((error as Error)?.message || 'Could not save the brand');
     }
   };
 
   return (
-    <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="max-h-[500px] overflow-y-auto sm:max-h-[550px] sm:max-w-[600px]">
-        <DialogHeader>
-          <DialogTitle className="text-start">Edit Equipment Brand</DialogTitle>
-          <DialogDescription className="text-start">Update equipment brand information.</DialogDescription>
+    <Dialog open={isOpen} onOpenChange={open => !open && onClose()}>
+      <DialogContent className="gap-0 overflow-hidden p-0 sm:max-w-xl">
+        <DialogHeader className="border-border border-b px-6 py-5">
+          <DialogTitle>Edit brand</DialogTitle>
+          <DialogDescription>{brand.name}</DialogDescription>
         </DialogHeader>
         <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-5 px-6 py-5">
             <EquipmentBrandFormFields />
-
-            <Separator />
-
-            {/* Response Error */}
-            {<ResponseError error={update.error as Error} />}
-
+            <ResponseError error={(update.error as Error) ?? null} />
             <DialogFooter>
               <Button type="button" variant="outline" onClick={onClose} disabled={update.isPending}>
                 Cancel
               </Button>
-              <LoadingButton isLoading={update.isPending} loadingText="Updating..." defaultText="Update" />
+              <LoadingButton
+                isLoading={update.isPending}
+                loadingText="Saving…"
+                defaultText="Save changes"
+                disabled={!form.formState.isDirty}
+              />
             </DialogFooter>
           </form>
         </Form>

@@ -1,78 +1,79 @@
-import Link from 'next/link';
-import { ArrowRight } from 'lucide-react';
-import { buttonVariants } from '@/components/ui/button';
-import { cn } from '@/lib/utils';
+import Link from 'next/link'
+import { ArrowRight } from 'lucide-react'
+import { cn } from '@/lib/utils'
+import { displayTitleClassName } from '@/components/website/common/marketing-styles'
 
 interface CTAButton {
-  text: string;
-  href: string;
+  text: string
+  href: string
 }
 
 interface CTASectionOffice {
-  name: string;
-  location: string;
+  name: string
+  location: string
 }
 
 interface CTASectionProps {
-  title: string;
-  description: string;
-  buttons: CTAButton[];
-  offices?: CTASectionOffice[];
-  titleClassName?: string;
-  descriptionClassName?: string;
+  title: string
+  description: string
+  buttons: CTAButton[]
+  offices?: CTASectionOffice[]
+  titleClassName?: string
+  descriptionClassName?: string
 }
 
 const DEFAULT_OFFICES: CTASectionOffice[] = [
-  { name: 'Dubai Studio City', location: 'BS 18, Dubai Studio City, United Arab Emirates' },
   { name: 'Dubai Production City', location: 'B29, Dubai Production City, United Arab Emirates' },
-];
+]
 
 export function CTASection({
   title,
   description,
   buttons,
   offices = DEFAULT_OFFICES,
-  titleClassName = 'text-2xl font-semibold tracking-tight md:text-3xl',
-  descriptionClassName = 'text-muted-foreground',
+  titleClassName,
+  descriptionClassName,
 }: CTASectionProps) {
-  const primaryButton = buttons[0];
+  const primaryButton = buttons[0]
 
   return (
-    <section className="py-12 lg:py-16">
-      <div className="rounded-2xl border border-border/60 bg-muted/30 px-8 py-12 md:px-16 md:py-16">
-        <div className="flex flex-col gap-10 md:flex-row md:items-center md:justify-between">
-          <div className="space-y-4 max-w-xl">
-            <h2 className={titleClassName}>{title}</h2>
-            <p className={descriptionClassName}>{description}</p>
+    <>
+    <section className="relative overflow-hidden bg-primary text-primary-foreground">
+      <div className="tech-pattern-dark absolute inset-0 opacity-20" />
+      <div className="relative container py-20 md:py-24">
+        <div className="flex flex-col gap-10 md:flex-row md:items-end md:justify-between">
+          <div className="max-w-xl space-y-5">
+            <div className="h-px w-12 bg-white" aria-hidden />
+            <h2 className={cn(displayTitleClassName, 'text-3xl text-white md:text-5xl', titleClassName)}>{title}</h2>
+            <p className={cn('max-w-xl text-base font-light leading-relaxed text-white/85', descriptionClassName)}>
+              {description}
+            </p>
           </div>
-          {primaryButton && (
+          {primaryButton ? (
             <Link
               href={primaryButton.href}
-              className={cn(
-                buttonVariants({ size: 'lg' }),
-                'rounded-full inline-flex items-center gap-2 w-fit shrink-0'
-              )}
+              className="group inline-flex h-12 w-fit items-center justify-center gap-3 bg-foreground px-7 text-xs font-medium tracking-[0.18em] text-background uppercase transition-colors hover:bg-foreground/90"
             >
               {primaryButton.text}
-              <ArrowRight className="size-4" />
+              <ArrowRight className="size-4 transition-transform group-hover:translate-x-1" />
             </Link>
-          )}
+          ) : null}
         </div>
 
-        {offices.length > 0 && (
-          <div className="mt-12 pt-10 border-t border-border/60">
-            <h3 className="text-lg font-semibold mb-6">Our Offices</h3>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              {offices.map(office => (
-                <div key={office.name}>
-                  <h4 className="font-medium">{office.name}</h4>
-                  <p className="text-sm text-muted-foreground mt-1">{office.location}</p>
-                </div>
-              ))}
-            </div>
-          </div>
-        )}
       </div>
     </section>
-  );
+    {offices.length > 0 ? (
+      <div className="bg-background">
+        <div className={cn('container grid grid-cols-1 gap-8 py-10', offices.length > 1 && 'md:grid-cols-2')}>
+          {offices.map(office => (
+            <div key={office.name}>
+              <h3 className="text-sm font-medium tracking-[0.16em] uppercase">{office.name}</h3>
+              <p className="text-muted-foreground mt-2 text-sm font-light">{office.location}</p>
+            </div>
+          ))}
+        </div>
+      </div>
+    ) : null}
+    </>
+  )
 }

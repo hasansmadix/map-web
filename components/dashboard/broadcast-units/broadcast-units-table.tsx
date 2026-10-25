@@ -3,7 +3,6 @@
 import { useState, useMemo } from 'react';
 
 import { toast } from 'sonner';
-import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 
 import { DataTable } from '@/components/shared/table/data-table';
@@ -19,6 +18,7 @@ import type { BroadcastUnit } from '@/types/broadcasts/broadcasts.types';
 import dynamic from 'next/dynamic';
 import DialogSkeleton from '../../shared/skeletons/dialog-skeleton';
 import { SelectFilter } from '@/components/shared/selects/select-filter';
+import { broadcastTypeLabel } from '@/components/dashboard/broadcast-units/unit-labels';
 import { BroadcastType } from '@/types/broadcasts/broadcast.enums';
 
 const ConfirmationDialogDynamic = dynamic(
@@ -66,11 +66,11 @@ export function BroadcastUnitsTable() {
     try {
       await deleteBroadcastUnit.mutateAsync(broadcastUnitToDelete.id);
 
-      toast.success('Broadcast unit deleted successfully');
+      toast.success('Unit deleted');
 
       setBroadcastUnitToDelete(null);
     } catch (error) {
-      const errMsg = (error as Error).message || 'Failed to delete Broadcast Unit';
+      const errMsg = (error as Error).message || 'Could not delete the unit';
 
       toast.error(errMsg);
       console.error('Error deleting broadcast unit:', error);
@@ -79,6 +79,7 @@ export function BroadcastUnitsTable() {
 
   const columns = useBroadcastUnitColumns({
     onDelete: setBroadcastUnitToDelete,
+    onEdit: unit => router.push(`/dashboard/broadcast-units/${unit.id}`),
   });
 
   const handleAddBroadcastUnit = () => {
@@ -101,7 +102,7 @@ export function BroadcastUnitsTable() {
       filters.push({
         key: 'type',
         label: 'Type',
-        value: typeFilter.replace(/_/g, ' ').replace(/\b\w/g, char => char.toUpperCase()),
+        value: broadcastTypeLabel(typeFilter),
       });
     }
 
@@ -110,30 +111,29 @@ export function BroadcastUnitsTable() {
 
   const broadcastTypeOptions = Object.values(BroadcastType).map(type => ({
     value: type,
-    label: type.replace(/_/g, ' ').replace(/\b\w/g, char => char.toUpperCase()),
+    label: broadcastTypeLabel(type),
   }));
 
   return (
     <>
-      <Card>
         {/* ========================== Page Header ========================== */}
         <TableHeader
-          title="Broadcast Units Management"
+          title="Broadcast units"
           total={total}
           currentPage={currentPage}
           totalPages={totalPages}
           isLoading={isPending}
           searchTerm={searchTerm}
+          onClearSearch={() => setSearch('')}
           filters={filterInfo}
           onClearAllFilters={clearAll}
           onAdd={handleAddBroadcastUnit}
-          addButtonText={`Add Broadcast Unit`}
-          entityName="Broadcast Unit"
-          entityNamePlural="Broadcast Units"
+          addButtonText="Add unit"
+          entityName="unit"
+          entityNamePlural="units"
         />
 
         {/* ========================== Table ========================== */}
-        <CardContent>
           <DataTable
             tableId="broadcast-units-table"
             columns={columns}
@@ -141,7 +141,7 @@ export function BroadcastUnitsTable() {
             isLoading={isPending}
             error={error}
             refetch={refetch}
-            emptyMessage="No data found"
+            emptyMessage="No units match this list."
             pageIndex={currentPage}
             pageSize={pageSize}
             totalRows={total}
@@ -156,19 +156,14 @@ export function BroadcastUnitsTable() {
             initialGlobalFilter={searchTerm}
             manualFiltering={true}
             messages={{
-              searchPlaceholder: 'Search...',
-              noData: 'No data found',
+              searchPlaceholder: 'Search units',
+              noData: 'No units yet',
             }}
+            onRowClick={unit => router.push(`/dashboard/broadcast-units/${unit.id}`)}
             toolbarRight={
               <div className="flex flex-wrap items-center gap-2">
                 <SelectFilter
-                  value={
-                    publishedFilter === undefined
-                      ? 'all'
-                      : (publishedFilter as unknown as string) === 'true'
-                        ? 'true'
-                        : 'false'
-                  }
+                  value={publishedFilter === undefined ? 'all' : publishedFilter ? 'true' : 'false'}
                   onValueChange={val =>
                     setFilter('isPublished', val === undefined ? undefined : val === 'true' ? true : false)
                   }
@@ -195,8 +190,6 @@ export function BroadcastUnitsTable() {
               </div>
             }
           />
-        </CardContent>
-      </Card>
 
       {/* ========================== Delete Modal ========================== */}
       {broadcastUnitToDelete && (
@@ -204,8 +197,8 @@ export function BroadcastUnitsTable() {
           open={!!broadcastUnitToDelete}
           onOpenChange={open => !open && setBroadcastUnitToDelete(null)}
           onConfirm={handleDeleteBroadcastUnit}
-          title="Confirm Delete"
-          description="Are you sure you want to delete this Broadcast Unit? This action cannot be undone and will permanently remove the Broadcast Unit from the system."
+          title="Delete unit"
+          description={`Delete ${broadcastUnitToDelete.title || broadcastUnitToDelete.slug}? The public page for this unit will go away.`}
           loadingText="Deleting..."
           isLoading={deleteBroadcastUnit.isPending}
           variant="destructive"

@@ -4,71 +4,59 @@ import { useFormContext } from 'react-hook-form';
 import { TextInput } from '@/components/shared/input/TextInput';
 import { TextAreaInput } from '@/components/shared/input/TextAreaInput';
 import { NumericInput } from '@/components/shared/input/NumericInput';
+import { broadcastTypeLabel } from '@/components/dashboard/broadcast-units/unit-labels';
 import { BroadcastType } from '@/types/broadcasts/broadcast.enums';
 import { SelectInput } from '@/components/shared/input/SelectInput';
 
-function formatBroadcastType(type: BroadcastType): string {
-  return type.replace(/_/g, ' ').replace(/\b\w/g, char => char.toUpperCase());
-}
-
 const broadcastTypeOptions = Object.values(BroadcastType).map(type => ({
   value: type,
-  label: formatBroadcastType(type),
+  label: broadcastTypeLabel(type),
 }));
 
-export function BasicInformationSection() {
+export function BasicInformationSection({ section = 'all' }: { section?: 'all' | 'identity' | 'search' }) {
   const { control } = useFormContext();
+  const showIdentity = section === 'all' || section === 'identity';
+  const showSearch = section === 'all' || section === 'search';
 
   return (
-    <>
-      <div className="grid grid-cols-1 items-start gap-4 md:grid-cols-2">
-        <SelectInput
-          control={control}
-          name="type"
-          label="Type"
-          placeholder="Select a broadcast type"
-          options={broadcastTypeOptions}
-        />
-        <NumericInput control={control} name="order" label="Order" placeholder="Enter order" />
-      </div>
+    <div className="space-y-4">
+      {showIdentity ? (
+        <>
+          <div className="grid grid-cols-1 items-start gap-4 md:grid-cols-2">
+            <SelectInput
+              control={control}
+              name="type"
+              label="Type"
+              placeholder="Select a type"
+              options={broadcastTypeOptions}
+            />
+            <NumericInput control={control} name="order" label="Order" placeholder="1" />
+            <TextInput control={control} name="title" label="Title" placeholder="12-camera OB van" />
+            <TextInput control={control} name="slug" label="Slug" placeholder="12-camera-ob-van" />
+          </div>
+          <TextAreaInput
+            control={control}
+            name="summary"
+            label="Summary"
+            placeholder="One line a producer can scan"
+            rows={3}
+          />
+        </>
+      ) : null}
 
-      <div className="grid grid-cols-1 items-start gap-4 md:grid-cols-2">
-        <TextInput control={control} name="slug" label="Slug" placeholder="broadcast-unit-slug" />
-      </div>
-
-      <TextInput control={control} name="title" label="Title" placeholder="Enter broadcast unit title" />
-
-      <TextAreaInput
-        control={control}
-        name="summary"
-        label="Summary"
-        placeholder="Enter broadcast unit summary"
-        className="min-h-[80px]"
-      />
-
-      <div className="space-y-4 rounded-lg border border-border/60 p-4">
-        <p className="text-muted-foreground text-sm font-medium">SEO Meta</p>
-        <TextInput
-          control={control}
-          name="metaTitle"
-          label="Meta Title"
-          placeholder="SEO title (optional)"
-        />
-        <TextAreaInput
-          control={control}
-          name="metaDescription"
-          label="Meta Description"
-          placeholder="SEO description (optional)"
-          className="min-h-[60px]"
-        />
-        <TextAreaInput
-          control={control}
-          name="metaKeywords"
-          label="Meta Keywords"
-          placeholder="Comma-separated keywords (optional)"
-          className="min-h-[60px]"
-        />
-      </div>
-    </>
+      {showSearch ? (
+        <>
+          <TextInput control={control} name="metaTitle" label="Meta title" placeholder="OB van hire in Dubai" />
+          <TextAreaInput
+            control={control}
+            name="metaDescription"
+            label="Meta description"
+            placeholder="What this unit is for"
+            rows={3}
+          />
+          <TextInput control={control} name="metaKeywords" label="Keywords" placeholder="ob van, outside broadcast, dubai" />
+        </>
+      ) : null}
+    </div>
   );
 }

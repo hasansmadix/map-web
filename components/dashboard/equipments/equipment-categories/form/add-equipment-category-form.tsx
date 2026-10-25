@@ -1,30 +1,19 @@
 'use client';
 
-import { zodResolver } from '@hookform/resolvers/zod';
-
-import { useForm } from 'react-hook-form';
-import { toast } from 'sonner';
+import ResponseError from '@/components/shared/response-error';
+import { LoadingButton } from '@/components/shared/buttons/loading-button';
 import { Button } from '@/components/ui/button';
-import EquipmentCategoryFormFields from './equipment-category-form-fields';
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-} from '@/components/ui/dialog';
+import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Form } from '@/components/ui/form';
-
 import { useEquipmentCategoryMutations } from '@/hooks/api/equipments/equipment-categories/mutations';
-
 import {
   createEquipmentCategorySchema,
   type TCreateEquipmentCategoryForm,
 } from '@/validations/equipments/categories/create-equipment-category.schema';
-import { LoadingButton } from '@/components/shared/buttons/loading-button';
-import { Separator } from '@/components/ui/separator';
-import ResponseError from '@/components/shared/response-error';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { useForm } from 'react-hook-form';
+import { toast } from 'sonner';
+import EquipmentCategoryFormFields from './equipment-category-form-fields';
 
 function AddEquipmentCategory({ isOpen, onClose }: { isOpen: boolean; onClose: () => void }) {
   const { create } = useEquipmentCategoryMutations();
@@ -39,39 +28,30 @@ function AddEquipmentCategory({ isOpen, onClose }: { isOpen: boolean; onClose: (
   const onSubmit = async (data: TCreateEquipmentCategoryForm) => {
     try {
       await create.mutateAsync(data);
-      toast.success('Equipment category created successfully');
-
+      toast.success('Category created');
       form.reset();
       onClose();
     } catch (error) {
-      const errorMessage = (create.error as Error)?.message || 'Failed to create equipment category';
-      toast.error(errorMessage);
+      toast.error((error as Error)?.message || 'Could not create the category');
     }
   };
 
   return (
-    <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="max-h-[600px] overflow-y-auto sm:max-h-[650px] sm:max-w-[600px]">
-        <DialogHeader>
-          <DialogTitle className="text-start">Add Equipment Category</DialogTitle>
-          <DialogDescription className="text-start">
-            Add a new equipment category to the system.
-          </DialogDescription>
+    <Dialog open={isOpen} onOpenChange={open => !open && onClose()}>
+      <DialogContent className="gap-0 overflow-hidden p-0 sm:max-w-xl">
+        <DialogHeader className="border-border border-b px-6 py-5">
+          <DialogTitle>Add category</DialogTitle>
+          <DialogDescription>A group in the hire catalogue, tied to one type of kit.</DialogDescription>
         </DialogHeader>
         <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-5 px-6 py-5">
             <EquipmentCategoryFormFields />
-
-            <Separator />
-
-            {/* Response Error */}
-            {<ResponseError error={create.error as Error} />}
-
+            <ResponseError error={(create.error as Error) ?? null} />
             <DialogFooter>
               <Button type="button" variant="outline" onClick={onClose} disabled={create.isPending}>
                 Cancel
               </Button>
-              <LoadingButton isLoading={create.isPending} loadingText="Adding..." defaultText="Add" />
+              <LoadingButton isLoading={create.isPending} loadingText="Creating…" defaultText="Create category" />
             </DialogFooter>
           </form>
         </Form>

@@ -2,6 +2,8 @@
 
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { cn } from "@/lib/utils";
+import { fieldControlClassName, fieldLabelClassName } from "@/components/shared/input/field-styles";
 
 interface SimpleTextInputProps {
   label: string;
@@ -24,13 +26,13 @@ export function SimpleTextInput({
 }: SimpleTextInputProps) {
   return (
     <div className="space-y-1">
-      <Label className="text-sm font-medium">{label}</Label>
+      <Label className={fieldLabelClassName}>{label}</Label>
       <Input
         value={value}
         onChange={(e) => onChange(e.target.value)}
         placeholder={placeholder}
         type={type}
-        className={className}
+        className={cn(fieldControlClassName, className)}
         disabled={disabled}
       />
     </div>

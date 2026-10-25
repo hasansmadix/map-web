@@ -1,13 +1,12 @@
+import { ArrowRight } from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';
 
-import { Badge } from '@/components/ui/badge';
-import { Card, CardContent } from '@/components/ui/card';
+import { capitalizeEachWord } from '@/utils/format';
 import type { IEquipment } from '@/types/equipments/equipment.type';
 
 interface EquipmentCardProps {
   equipment: IEquipment;
-
   priority?: boolean;
 }
 
@@ -17,55 +16,44 @@ const FALLBACK_IMAGE =
 export function EquipmentCard({ equipment, priority = false }: EquipmentCardProps) {
   const href = `/equipments/${equipment.slug}`;
   const coverImage = equipment.coverPath || FALLBACK_IMAGE;
+  const eyebrow = [equipment.brand?.name, equipment.category?.name].filter(Boolean).join(' · ');
 
   const isUnoptimized =
-    coverImage.includes('unsplash.com') ||
-    coverImage.includes('supabase.co') ||
-    coverImage.startsWith('http');
+    coverImage.includes('unsplash.com') || coverImage.includes('supabase.co') || coverImage.startsWith('http');
 
   return (
-    <Card className="group overflow-hidden p-0 transition-all duration-200 ">
-      <Link href={href} className="relative block h-48 aspect-video w-full overflow-hidden md:h-56">
-        <Image
-          src={coverImage}
-          alt={`${equipment.name || 'Equipment'} thumbnail`}
-          fill
-          sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-          className="object-cover transition-transform duration-200 group-hover:scale-105"
-          priority={priority}
-          unoptimized={isUnoptimized}
-        />
-      </Link>
-
-      <CardContent className="space-y-3 p-4">
-        <div className="flex flex-wrap items-center gap-2">
-          {equipment.category && (
-            <Badge key={equipment.category.name} variant="default" className="text-xs rounded-full">
-              {equipment.category.name}
-            </Badge>
-          )}
-          {equipment.brand && (
-            <Badge key={equipment.brand.name} variant="secondary" className="text-xs rounded-full">
-              {equipment.brand.name}
-            </Badge>
-          )}
-          {equipment.equipmentType && (
-            <Badge variant="outline" className="text-xs rounded-full">
-              {equipment.equipmentType}
-            </Badge>
-          )}
+    <article className="group border-border bg-card hover:bg-muted flex h-full flex-col border transition-colors">
+      <Link href={href} className="flex h-full flex-col">
+        <div className="bg-muted relative aspect-[16/10] overflow-hidden">
+          <Image
+            src={coverImage}
+            alt=""
+            fill
+            sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 25vw"
+            className="object-cover"
+            priority={priority}
+            unoptimized={isUnoptimized}
+          />
+          {equipment.isFeatured ? (
+            <span className="bg-primary text-primary-foreground absolute top-3 left-3 px-2 py-1 text-[10px] font-medium tracking-[0.14em] uppercase">
+              Featured
+            </span>
+          ) : null}
         </div>
-
-        <h3 className="group-hover:text-primary line-clamp-2 text-sm md:text-base font-semibold transition-colors tracking-tight">
-          <Link href={href} className="hover:underline">
-            {equipment.name}
-          </Link>
-        </h3>
-
-        {!!equipment.summary && (
-          <div className="text-muted-foreground line-clamp-3 text-xs md:text-sm tracking-tight">{equipment.summary}</div>
-        )}
-      </CardContent>
-    </Card>
+        <div className="flex flex-1 flex-col gap-3 p-5">
+          {eyebrow ? (
+            <p className="text-muted-foreground truncate text-[11px] font-medium tracking-[0.16em] uppercase">{eyebrow}</p>
+          ) : null}
+          <h2 className="line-clamp-2 text-lg font-medium tracking-tight">{equipment.name}</h2>
+          {equipment.summary ? (
+            <p className="text-muted-foreground line-clamp-2 text-sm font-light">{equipment.summary}</p>
+          ) : null}
+          <p className="text-muted-foreground group-hover:text-primary mt-auto flex items-center gap-2 pt-4 text-[11px] font-medium tracking-[0.16em] uppercase">
+            {equipment.equipmentType ? capitalizeEachWord(equipment.equipmentType) : 'View'}
+            <ArrowRight className="size-3.5 transition-transform group-hover:translate-x-0.5" />
+          </p>
+        </div>
+      </Link>
+    </article>
   );
 }

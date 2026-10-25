@@ -3,6 +3,7 @@ import {
   generateBroadcastUrls,
   generateIntentUrls,
   generateSitemapXml,
+  productionPaths,
 } from '@/utils/seo/sitemap/sitemap-utils';
 import { MetadataRoute } from 'next';
 import { NextResponse } from 'next/server';
@@ -33,15 +34,14 @@ export async function GET(_request: Request, props: { params: Promise<{ entity: 
 
 async function generateEntityUrls(entity: string, page: number): Promise<MetadataRoute.Sitemap> {
   switch (entity) {
-    case 'services': {
-      return [
-        {
-          url: '/services',
-          lastModified: new Date(),
-          changeFrequency: 'weekly' as const,
-          priority: 0.9,
-        },
-      ];
+    case 'production': {
+      const start = (page - 1) * maxLocsPerSitemap
+      return productionPaths.slice(start, start + maxLocsPerSitemap).map(url => ({
+        url,
+        lastModified: new Date(),
+        changeFrequency: 'weekly' as const,
+        priority: url === '/production' ? 0.9 : 0.8,
+      }))
     }
     case 'blog': {
       const { data: posts } = await articlesService.getAll({
@@ -96,66 +96,6 @@ async function generateEntityUrls(entity: string, page: number): Promise<Metadat
           lastModified: new Date(),
           changeFrequency: 'weekly' as const,
           priority: 0.7,
-        },
-        {
-          url: `/broadcasts`,
-          lastModified: new Date(),
-          changeFrequency: 'daily' as const,
-          priority: 0.8,
-        },
-        {
-          url: `/broadcasting`,
-          lastModified: new Date(),
-          changeFrequency: 'weekly' as const,
-          priority: 0.9,
-        },
-        {
-          url: `/broadcasting/outside-broadcast`,
-          lastModified: new Date(),
-          changeFrequency: 'weekly' as const,
-          priority: 0.8,
-        },
-        {
-          url: `/broadcasting/portable-broadcast-systems`,
-          lastModified: new Date(),
-          changeFrequency: 'weekly' as const,
-          priority: 0.8,
-        },
-        {
-          url: `/services`,
-          lastModified: new Date(),
-          changeFrequency: 'daily' as const,
-          priority: 0.8,
-        },
-        {
-          url: `/commercial-video-production`,
-          lastModified: new Date(),
-          changeFrequency: 'weekly' as const,
-          priority: 0.8,
-        },
-        {
-          url: `/corporate-video-production`,
-          lastModified: new Date(),
-          changeFrequency: 'weekly' as const,
-          priority: 0.8,
-        },
-        {
-          url: `/event-video-production`,
-          lastModified: new Date(),
-          changeFrequency: 'weekly' as const,
-          priority: 0.8,
-        },
-        {
-          url: `/live-event-production`,
-          lastModified: new Date(),
-          changeFrequency: 'weekly' as const,
-          priority: 0.8,
-        },
-        {
-          url: `/studio-video-production`,
-          lastModified: new Date(),
-          changeFrequency: 'weekly' as const,
-          priority: 0.8,
         },
         {
           url: `/blog`,

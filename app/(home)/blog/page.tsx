@@ -2,10 +2,8 @@ import { Suspense } from 'react';
 
 import { BlogSection, BlogSectionSkeleton } from '@/components/website/blog/blog-section';
 import { PageHero, PageSection } from '@/components/website/common/page-components';
-import CustomSearch from '@/components/shared/search/custom-search';
 import { CTASection } from '@/components/website/common/cta-section';
 import { createEnhancedMetadata } from '@/utils/seo/meta/enhanced-meta';
-import { Newspaper } from 'lucide-react';
 
 interface Props {
   searchParams?: Promise<{
@@ -20,7 +18,7 @@ export function generateMetadata() {
   return createEnhancedMetadata({
     title: 'Media Production Insights & Creative Blog | MAP Media Art Production',
     description:
-      'Read expert insights, trends, and tips on media production, video marketing, storytelling, and creative strategies from MAP professionals.',
+      'Notes on film, broadcast, and studio production from MAP Media Art Production in Dubai.',
     pathname: '/blog',
     mainOverrides: {
       category: 'Media Production Insights',
@@ -39,15 +37,15 @@ export default async function BlogPage(props: Props) {
   return (
     <div className="bg-background min-h-screen">
       <PageHero
-        title="Media Production Insights & Blog"
-        description="Stay updated with our latest news and insights on video production, broadcasting, and creative strategies from MAP professionals."
-        buttons={[
-          { text: 'Contact Us', href: '/contact' },
-          { text: 'View Services', href: '/services', variant: 'outline' },
+        eyebrow="Blog"
+        title="Blog"
+        description="Notes on production, broadcast, and the programmes MAP delivers for organisations."
+        breadcrumbs={[
+          { label: 'Home', href: '/' },
+          { label: 'Blog' },
         ]}
-        minHeight="55vh"
+        buttons={[]}
       />
-
 
       <PageSection>
         <Suspense
@@ -58,17 +56,11 @@ export default async function BlogPage(props: Props) {
         </Suspense>
       </PageSection>
 
-      <div className="section-padding container">
-        <CTASection
-          title="Want to Learn More?"
-          description="Explore our services and solutions to discover how we can help transform your media production and broadcasting needs. Get in touch with our team for personalized guidance."
-          buttons={[
-            { text: 'Contact Us', href: '/contact' },
-            { text: 'View Services', href: '/services' },
-          ]}
-          offices={[]}
-        />
-      </div>
+      <CTASection
+        title="Request a proposal"
+        description="Share the date, the format, and where the programme needs to play. MAP will reply with a crew and a written proposal."
+        buttons={[{ text: 'Contact', href: '/contact' }]}
+      />
     </div>
   );
 }

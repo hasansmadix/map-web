@@ -1,17 +1,15 @@
 import { type Metadata } from 'next';
+import { PageHeader } from '@/components/dashboard/page-header';
 import IntentsTable from '@/components/dashboard/intents/intents-table';
 
 export const metadata: Metadata = {
-  title: 'Intents Management',
+  title: 'Intents',
 };
 
 export default async function IntentsPage() {
   return (
-    <div className="space-y-6 p-4">
-      <header>
-        <h1 className="text-3xl font-bold tracking-tight">Intents Management</h1>
-        <p className="text-muted-foreground">Manage search page intents for equipment rental</p>
-      </header>
+    <div className="map-page">
+      <PageHeader title="Intents" description="Search pages for the hire catalogue. Open a row to edit the page." />
 
       <IntentsTable />
     </div>

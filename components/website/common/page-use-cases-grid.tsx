@@ -1,36 +1,32 @@
+import { bodyCopyClassName, displayTitleClassName, kickerRuleClassName } from '@/components/website/common/marketing-styles'
+import { cn } from '@/lib/utils'
+
 interface PageUseCasesGridProps {
-  title: string;
-  description?: string;
-  items: string[];
-  cols?: 3 | 4 | 5;
+  title: string
+  description?: string
+  items: string[]
+  cols?: 3 | 4 | 5
 }
 
 export function PageUseCasesGrid({ title, description, items, cols = 4 }: PageUseCasesGridProps) {
   const gridClass =
-    cols === 3
-      ? 'grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3'
-      : cols === 5
-        ? 'grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-5'
-        : 'grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4';
+    cols === 3 ? 'sm:grid-cols-2 lg:grid-cols-3' : cols === 5 ? 'sm:grid-cols-2 lg:grid-cols-5' : 'sm:grid-cols-2 lg:grid-cols-4'
 
   return (
     <div className="space-y-8">
-      <div>
-        <h2 className="text-2xl font-semibold md:text-3xl">{title}</h2>
-        {description && (
-          <p className="text-muted-foreground mt-2 text-base leading-relaxed">{description}</p>
-        )}
+      <div className="space-y-5">
+        <div className={kickerRuleClassName} aria-hidden />
+        <h2 className={cn(displayTitleClassName, 'text-3xl md:text-4xl')}>{title}</h2>
+        {description ? <p className={cn(bodyCopyClassName, 'max-w-3xl text-base')}>{description}</p> : null}
       </div>
-      <div className={gridClass}>
-        {items.map((item, i) => (
-          <div
-            key={i}
-            className="flex items-center justify-center rounded-xl border border-border/60 bg-muted/20 p-4 text-center text-sm font-medium transition-colors hover:bg-muted/30"
-          >
-            {item}
-          </div>
+      <ul className={cn('border-border bg-border grid grid-cols-1 gap-px border', gridClass)}>
+        {items.map((item, index) => (
+          <li key={item} className="bg-background flex items-start gap-4 p-5 md:p-6">
+            <span className="text-primary text-sm font-light tabular-nums">{String(index + 1).padStart(2, '0')}</span>
+            <span className="text-sm font-light">{item}</span>
+          </li>
         ))}
-      </div>
+      </ul>
     </div>
-  );
+  )
 }

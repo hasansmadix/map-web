@@ -4,7 +4,6 @@ import { useState, useMemo } from 'react';
 import { useRouter } from 'next/navigation';
 
 import { toast } from 'sonner';
-import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 
 import { DataTable } from '@/components/shared/table/data-table';
@@ -15,19 +14,10 @@ import { useIntentMutations } from '@/hooks/api/intents/mutations';
 import { useIntentsController } from '@/hooks/api/intents/use-intents-controller';
 import { useIntentColumns } from '@/components/dashboard/intents/columns';
 
-import type { IIntentBase, IntentType } from '@/types/intents/intent.type';
+import { INTENT_TYPE_OPTIONS } from '@/components/dashboard/intents/intent-labels';
+import type { IIntentBase } from '@/types/intents/intent.type';
 import dynamic from 'next/dynamic';
 import DialogSkeleton from '@/components/shared/skeletons/dialog-skeleton';
-
-const INTENT_TYPE_OPTIONS: { value: IntentType; label: string }[] = [
-  { value: 'HUB', label: 'HUB' },
-  { value: 'CLUSTER', label: 'CLUSTER' },
-  { value: 'CATEGORY', label: 'CATEGORY' },
-  { value: 'BRAND', label: 'BRAND' },
-  { value: 'MODEL', label: 'MODEL' },
-  { value: 'OFFER', label: 'OFFER' },
-  { value: 'LOCATION', label: 'LOCATION' },
-];
 
 const ConfirmationDialogDynamic = dynamic(
   () => import('@/components/shared/confirmation-dialog').then(mod => mod.ConfirmationDialog),
@@ -77,11 +67,11 @@ function IntentsTable() {
     if (!selectedIntent) return;
     try {
       await deleteIntent.mutateAsync(selectedIntent.id);
-      toast.success('Intent deleted successfully');
+      toast.success('Intent deleted');
       setSelectedIntent(null);
       setActiveDialog(null);
     } catch (err) {
-      toast.error((err as Error).message || 'Failed to delete intent');
+      toast.error((err as Error).message || 'Could not delete the intent');
     }
   };
 
@@ -89,18 +79,14 @@ function IntentsTable() {
 
   const filterInfo: FilterInfo[] = useMemo(() => {
     const filters: FilterInfo[] = [];
-    if (searchTerm) {
-      filters.push({ key: 'search', label: 'Search', value: searchTerm });
-    }
     if (typeFilter) {
       filters.push({ key: 'type', label: 'Type', value: typeFilter });
     }
     return filters;
-  }, [searchTerm, typeFilter]);
+  }, [typeFilter]);
 
   return (
     <>
-      <Card>
         <TableHeader
           title="Intents"
           total={total}
@@ -108,15 +94,15 @@ function IntentsTable() {
           totalPages={totalPages}
           isLoading={isPending}
           searchTerm={searchTerm}
+          onClearSearch={() => setSearch('')}
           filters={filterInfo}
           onClearAllFilters={clearAll}
           onAdd={() => router.push('/dashboard/intents/add')}
-          addButtonText="Add Intent"
-          entityName="Intent"
-          entityNamePlural="Intents"
+          addButtonText="Add intent"
+          entityName="intent"
+          entityNamePlural="intents"
         />
 
-        <CardContent>
           <DataTable
             tableId="intents-table"
             columns={columns}
@@ -124,7 +110,7 @@ function IntentsTable() {
             isLoading={isPending}
             error={error}
             refetch={refetch}
-            emptyMessage="No intents found"
+            emptyMessage="No intents match this list."
             pageIndex={currentPage}
             pageSize={pageSize}
             totalRows={total}
@@ -138,7 +124,8 @@ function IntentsTable() {
             onGlobalFilterChange={setSearch}
             initialGlobalFilter={searchTerm}
             manualFiltering
-            messages={{ searchPlaceholder: 'Search...', noData: 'No intents found' }}
+            messages={{ searchPlaceholder: 'Search intents', noData: 'No intents yet' }}
+            onRowClick={handleEdit}
             toolbarRight={
               <div className="flex flex-wrap items-center gap-2">
                 <SelectFilter
@@ -156,16 +143,14 @@ function IntentsTable() {
               </div>
             }
           />
-        </CardContent>
-      </Card>
 
       {activeDialog === 'delete' && (
         <ConfirmationDialogDynamic
           open
           onOpenChange={open => !open && setActiveDialog(null)}
           onConfirm={handleDeleteIntent}
-          title="Confirm Delete"
-          description="Are you sure you want to delete this intent? This action cannot be undone."
+          title="Delete intent"
+          description={`Delete ${selectedIntent?.h1 || selectedIntent?.slug || 'this page'}? The public search page will go away.`}
           loadingText="Deleting..."
           isLoading={deleteIntent.isPending}
           variant="destructive"

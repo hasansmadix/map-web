@@ -7,7 +7,7 @@ export const metadata: Metadata = {
 
 export default function Page() {
   return (
-    <section className="pb-8">
+    <section className="map-page">
       <DashboardHome />
     </section>
   );

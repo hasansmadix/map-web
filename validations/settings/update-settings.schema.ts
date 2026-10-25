@@ -82,6 +82,16 @@ function updateSettingsSchema() {
           .trim()
           .min(1, validation.required)
           .max(20, fmt(validation.string.maxLength, { max: 20 })),
+        address: z
+          .string()
+          .trim()
+          .max(300, fmt(validation.string.maxLength, { max: 300 }))
+          .optional(),
+        workingHours: z
+          .string()
+          .trim()
+          .max(200, fmt(validation.string.maxLength, { max: 200 }))
+          .optional(),
       })
       .optional(),
     customScripts: z

@@ -1,30 +1,20 @@
-import { ArrowLeft } from 'lucide-react';
-import Link from 'next/link';
-
 import { AddArticleForm } from '@/components/dashboard/articles/form/add-article-form';
-import { Button } from '@/components/ui/button';
-
+import { PageHeader } from '@/components/dashboard/page-header';
 import { type Metadata } from 'next';
 
 export const metadata: Metadata = {
-  title: 'Add Article',
+  title: 'Add article',
 };
 
 export default async function AddArticlePage() {
   return (
-    <div className="space-y-6 p-4">
-      <header className="flex items-center space-x-4">
-        <Link href="/dashboard/articles">
-          <Button variant="outline" size="icon">
-            <ArrowLeft className="h-4 w-4 rtl:rotate-180" />
-          </Button>
-        </Link>
-        <div>
-          <h1 className="text-3xl font-bold tracking-tight">Add Article</h1>
-          <p className="text-muted-foreground">Create a new article with content, tags, and topics.</p>
-        </div>
-      </header>
-
+    <div className="map-page">
+      <PageHeader
+        title="Add article"
+        description="A story for the public blog."
+        backHref="/dashboard/articles"
+        compact
+      />
       <AddArticleForm />
     </div>
   );

@@ -3,31 +3,22 @@
 import { useState, useMemo } from 'react';
 
 import { toast } from 'sonner';
-import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 
 import { DataTable } from '@/components/shared/table/data-table';
 
+import { useRouter } from 'next/navigation';
 import { useStaffMutations } from '@/hooks/api/staff/mutations';
+import { useStaffMe } from '@/hooks/api/staff/useStaffMe';
 import { useStaffController } from '@/hooks/api/staff/useStaffController';
+import { ROLE_LABEL } from '@/components/dashboard/staff/form/staff-form-fields';
 import { useStaffColumns } from './columns';
 import { TableHeader, type FilterInfo } from '@/components/shared/table/table-header';
 
-import type { Staff } from '@/types/staff.types';
-import type { Role } from '@/types/staff.types';
+import { Role, type Staff } from '@/types/staff.types';
 import dynamic from 'next/dynamic';
 import DialogSkeleton from '@/components/shared/skeletons/dialog-skeleton';
 import { SelectFilter } from '@/components/shared/selects/select-filter';
-
-const AddStaffMemberDynamic = dynamic(() => import('./form/add-staff-form'), {
-  ssr: false,
-  loading: () => <DialogSkeleton />,
-});
-
-const EditStaffMemberDynamic = dynamic(() => import('./form/edit-staff-form'), {
-  ssr: false,
-  loading: () => <DialogSkeleton />,
-});
 
 const ConfirmationDialogDynamic = dynamic(
   () => import('@/components/shared/confirmation-dialog').then(mod => mod.ConfirmationDialog),
@@ -37,11 +28,10 @@ const ConfirmationDialogDynamic = dynamic(
   },
 );
 
-type DialogType = 'add' | 'edit' | 'delete' | null;
-
 function StaffTable() {
-  const [activeDialog, setActiveDialog] = useState<DialogType>(null);
-  const [selectedStaff, setSelectedStaff] = useState<Staff | null>(null);
+  const router = useRouter();
+  const { isCurrentUser, isAuthor, isAdmin } = useStaffMe();
+  const [staffToDelete, setStaffToDelete] = useState<Staff | null>(null);
 
   const {
     items: staff,
@@ -68,31 +58,24 @@ function StaffTable() {
 
   const { del: deleteStaff } = useStaffMutations();
 
-  const handleEdit = (staff: Staff) => {
-    setSelectedStaff(staff);
-    setActiveDialog('edit');
+  const handleEdit = (person: Staff) => {
+    router.push(`/dashboard/staff/${person.id}`);
   };
 
-  const handleDelete = (staff: Staff) => {
-    setSelectedStaff(staff);
-    setActiveDialog('delete');
+  const handleDelete = (person: Staff) => {
+    setStaffToDelete(person);
   };
 
   const handleDeleteStaff = async () => {
-    if (!selectedStaff) return;
+    if (!staffToDelete) return;
 
     try {
-      await deleteStaff.mutateAsync(selectedStaff.id);
-
+      await deleteStaff.mutateAsync(staffToDelete.id);
       toast.success('Staff deleted successfully');
-
-      setSelectedStaff(null);
-      setActiveDialog(null);
+      setStaffToDelete(null);
     } catch (error) {
       const errMsg = (error as Error).message || 'Failed to delete staff';
-
       toast.error(errMsg);
-      console.error('Error deleting staff:', error);
     }
   };
 
@@ -102,7 +85,7 @@ function StaffTable() {
   });
 
   const handleAddStaff = () => {
-    setActiveDialog('add');
+    router.push('/dashboard/staff/add');
   };
 
   // Prepare filter information for the header
@@ -110,14 +93,7 @@ function StaffTable() {
     const filters: FilterInfo[] = [];
 
     if (roleFilter) {
-      const roleLabel =
-        roleFilter === 'superadmin'
-          ? 'Super Admin'
-          : roleFilter === 'admin'
-            ? 'Admin'
-            : roleFilter === 'author'
-              ? 'Author'
-              : roleFilter;
+      const roleLabel = ROLE_LABEL[roleFilter] || roleFilter;
       filters.push({
         key: 'role',
         label: 'Role',
@@ -130,25 +106,24 @@ function StaffTable() {
 
   return (
     <>
-      <Card>
         {/* ========================== Page Header ========================== */}
         <TableHeader
-          title={'Staff Members'}
+          title="Staff"
           total={total}
           currentPage={currentPage}
           totalPages={totalPages}
           isLoading={isPending}
           searchTerm={searchTerm}
+          onClearSearch={() => setSearch('')}
           filters={filterInfo}
           onClearAllFilters={clearAll}
           onAdd={handleAddStaff}
-          addButtonText={`Add Staff`}
+          addButtonText="Add staff"
           entityName={'Staff'}
           entityNamePlural={'Staff'}
         />
 
         {/* ========================== Table ========================== */}
-        <CardContent>
           <DataTable
             tableId="staff-table"
             columns={columns}
@@ -156,7 +131,13 @@ function StaffTable() {
             isLoading={isPending}
             error={error}
             refetch={refetch}
-            emptyMessage={'No data found'}
+            emptyMessage="No staff yet"
+            onRowClick={person => {
+              const isCurrent = isCurrentUser(person.id);
+              const isViewingNonAuthor = person.role !== Role.AUTHOR;
+              if (isCurrent || isAuthor || (isAdmin && isViewingNonAuthor)) return;
+              handleEdit(person);
+            }}
             pageIndex={currentPage}
             pageSize={pageSize}
             totalRows={total}
@@ -171,20 +152,20 @@ function StaffTable() {
             initialGlobalFilter={searchTerm}
             manualFiltering={true}
             messages={{
-              searchPlaceholder: 'Search...',
-              noData: 'No data found',
+              searchPlaceholder: 'Search staff',
+              noData: 'No staff yet',
             }}
             toolbarRight={
               <div className="flex flex-wrap items-center gap-2">
                 <SelectFilter
                   value={roleFilter || 'all'}
-                  onValueChange={val => setFilter('role', val)}
+                  onValueChange={val => setFilter('role', val === undefined ? undefined : (val as Role))}
                   options={[
-                    { value: 'superadmin', label: 'Super Admin' },
+                    { value: 'superadmin', label: 'Super admin' },
                     { value: 'admin', label: 'Admin' },
                     { value: 'author', label: 'Author' },
                   ]}
-                  allOptionLabel="All Roles"
+                  allOptionLabel="All roles"
                   className="w-32"
                 />
 
@@ -196,31 +177,14 @@ function StaffTable() {
               </div>
             }
           />
-        </CardContent>
-      </Card>
 
-      {/* ========================== Add Modal ========================== */}
-      {activeDialog === 'add' && (
-        <AddStaffMemberDynamic isOpen={activeDialog === 'add'} onClose={() => setActiveDialog(null)} />
-      )}
-
-      {/* ========================== Edit Modal ========================== */}
-      {activeDialog === 'edit' && (
-        <EditStaffMemberDynamic
-          isOpen={activeDialog === 'edit'}
-          onClose={() => setActiveDialog(null)}
-          staff={selectedStaff as Staff}
-        />
-      )}
-
-      {/* ========================== Delete Modal ========================== */}
-      {activeDialog === 'delete' && (
+      {staffToDelete && (
         <ConfirmationDialogDynamic
-          open={activeDialog === 'delete'}
-          onOpenChange={open => !open && setActiveDialog(null)}
+          open={!!staffToDelete}
+          onOpenChange={open => !open && setStaffToDelete(null)}
           onConfirm={handleDeleteStaff}
-          title="Confirm Delete"
-          description="Are you sure you want to delete this staff member? This action cannot be undone and will permanently remove the staff member from the system."
+          title={`Delete ${staffToDelete.name || 'this person'}`}
+          description={`This removes ${staffToDelete.name || 'this person'} from the dashboard.`}
           loadingText="Deleting..."
           isLoading={deleteStaff.isPending}
           variant="destructive"

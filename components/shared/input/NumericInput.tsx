@@ -6,10 +6,10 @@ import { FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/comp
 import { Control, FieldPath, FieldValues } from 'react-hook-form';
 import { cn } from '@/lib/utils';
 
-const inputBaseClassName = cn(
-  'min-h-8 rounded-md transition-all duration-200 mb-0 focus-visible:ring-1 focus-visible:ring-primary/40',
-);
-const labelClassName = cn('text-sm font-medium text-foreground ');
+import { fieldControlClassName, fieldLabelClassName } from '@/components/shared/input/field-styles';
+
+const inputBaseClassName = fieldControlClassName;
+const labelClassName = fieldLabelClassName;
 
 interface NumericInputProps<T extends FieldValues> {
   control: Control<T>;

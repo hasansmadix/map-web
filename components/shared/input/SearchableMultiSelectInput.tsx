@@ -8,6 +8,7 @@ import { Button } from "@/components/ui/button";
 import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from "@/components/ui/command";
 import { FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import { fieldLabelClassName } from "@/components/shared/input/field-styles";
 
 interface SearchableMultiSelectOption {
   id: number;
@@ -49,7 +50,7 @@ export function SearchableMultiSelectInput<T extends FieldValues>({
       render={({ field }) => (
         <FormItem>
           <div className="mb-4">
-            <FormLabel className="text-base">{label}</FormLabel>
+            <FormLabel className={fieldLabelClassName}>{label}</FormLabel>
             {description && <p className="text-sm text-muted-foreground">{description}</p>}
           </div>
           <Popover open={open} onOpenChange={setOpen}>

@@ -2,6 +2,8 @@
 
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
+import { cn } from "@/lib/utils";
+import { fieldControlClassName, fieldLabelClassName } from "@/components/shared/input/field-styles";
 
 interface SimpleTextAreaInputProps {
   label: string;
@@ -24,12 +26,12 @@ export function SimpleTextAreaInput({
 }: SimpleTextAreaInputProps) {
   return (
     <div className="space-y-1">
-      <Label className="text-sm font-medium">{label}</Label>
+      <Label className={fieldLabelClassName}>{label}</Label>
       <Textarea
         value={value || ""}
         onChange={(e) => onChange(e.target.value)}
         placeholder={placeholder}
-        className={className}
+        className={cn(fieldControlClassName, "h-auto min-h-24", className)}
         rows={rows}
         disabled={disabled}
       />

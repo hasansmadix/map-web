@@ -1,76 +1,66 @@
-import type { BroadCastUnitSpecs } from '@/types/broadcasts/broadcasts.types';
+import { bodyCopyClassName, displayTitleClassName, eyebrowClassName } from '@/components/website/common/marketing-styles'
+import { cn } from '@/lib/utils'
 
 interface UnitSpecificationsProps {
-  specs: BroadCastUnitSpecs;
+  specs: Record<string, unknown>
+}
+
+const specLabels: Record<string, string> = {
+  areaSqm: 'Area',
+  cameraChains: 'Camera chains',
+  cameraSystem: 'Camera system',
+  visionMixer: 'Vision mixer',
+  visionMixers: 'Vision mixers',
+  audioMixer: 'Audio mixer',
+  powerBackup: 'Power backup',
+  broadcastReady: 'Broadcast ready',
+  wirelessAudio: 'Wireless audio',
+  useCases: 'Use cases',
+}
+
+function formatSpecValue(key: string, val: unknown): string {
+  if (key === 'areaSqm' && typeof val === 'number') return `${val} m²`
+  if (typeof val === 'boolean') return val ? 'Yes' : 'No'
+  if (Array.isArray(val)) return val.filter(Boolean).join(', ')
+  if (typeof val === 'object' && val !== null) return JSON.stringify(val)
+  return String(val)
+}
+
+function formatSpecKey(key: string) {
+  if (specLabels[key]) return specLabels[key]
+  return key
+    .replace(/([A-Z])/g, ' $1')
+    .replace(/^./, str => str.toUpperCase())
+    .trim()
 }
 
 export function UnitSpecifications({ specs }: UnitSpecificationsProps) {
-  const formatSpecValue = (val: unknown): string => {
-    if (Array.isArray(val)) return val.join(', ');
-    if (typeof val === 'object' && val !== null) return JSON.stringify(val, null, 2);
-    return String(val);
-  };
+  const entries = Object.entries(specs).filter(([, value]) => {
+    if (value == null || value === '') return false
+    if (Array.isArray(value)) return value.length > 0
+    return true
+  })
 
-  const entries = Object.entries(specs) as [keyof BroadCastUnitSpecs, unknown][];
+  if (entries.length === 0) return null
 
   return (
     <section>
-      <div className="space-y-6">
-        <div>
-          <h2 className="mb-2 text-xl font-semibold md:text-2xl tracking-tight">Specifications</h2>
-          <p className="text-muted-foreground text-sm md:text-base">
-            Technical specifications and details of this broadcast unit
-          </p>
-        </div>
-
-        <dl className="space-y-0">
-          {entries.map(([key, value], index) => {
-            const formattedKey = key
-              .replace(/([A-Z])/g, ' $1')
-              .replace(/^./, str => str.toUpperCase())
-              .trim();
-            const displayValue = formatSpecValue(value);
-            const isArray = Array.isArray(value);
-            const hasArrayItems = isArray && (value as unknown[]).length > 0;
-            const isLast = index === entries.length - 1;
-
-            return (
-              <div
-                key={key}
-                className={`flex flex-col gap-2 py-4 sm:flex-row sm:items-start sm:gap-8 sm:py-4 ${!isLast ? 'border-b border-border/50' : ''
-                  }`}
-              >
-                <dt className="text-muted-foreground min-w-[140px] shrink-0 text-sm font-medium">
-                  {formattedKey}
-                </dt>
-                <dd className="min-w-0 flex-1">
-                  {hasArrayItems ? (
-                    <ul className="flex flex-wrap gap-2">
-                      {(value as string[]).map((item, idx) => (
-                        <li
-                          key={idx}
-                          className="inline-flex items-center gap-1.5 rounded-full bg-primary/10 px-3 py-1.5 text-xs font-medium"
-                        >
-                          <span className="bg-primary/30 h-1.5 w-1.5 shrink-0 rounded-full" />
-                          {item}
-                        </li>
-                      ))}
-                    </ul>
-                  ) : typeof value === 'object' && value !== null && !isArray ? (
-                    <pre className="text-muted-foreground max-w-full overflow-x-auto rounded-lg bg-muted/40 p-4 font-mono text-xs leading-relaxed whitespace-pre-wrap">
-                      {displayValue}
-                    </pre>
-                  ) : (
-                    <p className="text-foreground text-xs font-medium leading-relaxed sm:text-sm">
-                      {displayValue}
-                    </p>
-                  )}
-                </dd>
-              </div>
-            );
-          })}
-        </dl>
-      </div>
+      <p className={eyebrowClassName}>
+        <span className="bg-primary h-px w-8" aria-hidden />
+        Technical
+      </p>
+      <h2 className={cn(displayTitleClassName, 'text-3xl md:text-4xl')}>Specifications</h2>
+      <p className={cn(bodyCopyClassName, 'mt-4 max-w-2xl text-base')}>The numbers that decide if this unit fits the show.</p>
+      <dl className="border-border mt-12 border-t">
+        {entries.map(([key, value]) => (
+          <div key={key} className="border-border grid grid-cols-1 gap-2 border-b py-5 sm:grid-cols-12 sm:gap-8">
+            <dt className="text-muted-foreground text-[11px] font-medium tracking-[0.16em] uppercase sm:col-span-4">
+              {formatSpecKey(key)}
+            </dt>
+            <dd className="text-sm font-light sm:col-span-8">{formatSpecValue(key, value)}</dd>
+          </div>
+        ))}
+      </dl>
     </section>
-  );
+  )
 }

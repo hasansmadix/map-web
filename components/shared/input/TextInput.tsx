@@ -3,6 +3,8 @@
 import type { Control, FieldPath, FieldValues } from 'react-hook-form';
 import { FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
+import { cn } from '@/lib/utils';
+import { fieldControlClassName, fieldLabelClassName } from '@/components/shared/input/field-styles';
 
 interface TextInputProps<T extends FieldValues> {
   control: Control<T>;
@@ -33,10 +35,10 @@ export function TextInput<T extends FieldValues>({
       name={name}
       render={({ field }) => (
         <FormItem>
-          <FormLabel>{label}</FormLabel>
+          <FormLabel className={fieldLabelClassName}>{label}</FormLabel>
           <FormControl>
             <Input
-              className={className}
+              className={cn(fieldControlClassName, className)}
               placeholder={placeholder}
               type={type}
               autoComplete={autoComplete}

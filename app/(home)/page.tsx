@@ -2,36 +2,28 @@ import { Suspense } from 'react';
 
 import { createEnhancedMetadata } from '@/utils/seo/meta/enhanced-meta';
 import type { Metadata } from 'next';
-import {
-  PageHero,
-  PageSection,
-  PageIntro,
-  PageUseCasesGrid,
-  PageInternalLinks,
-} from '@/components/website/common/page-components';
+import { PageSection } from '@/components/website/common/page-section';
 import { CTASection } from '@/components/website/common/cta-section';
 
+import { HomeHero } from '@/components/website/home/home-hero';
+import { HomeIntro } from '@/components/website/home/home-intro';
+import { HomeEquipment } from '@/components/website/home/home-equipment';
+import { HomeFeaturePanels } from '@/components/website/home/home-feature-panels';
+import { HomeIndustries } from '@/components/website/home/home-industries';
 import { WhatWeDoSection } from '@/components/website/home/what-we-do-section';
-import { BroadcastingInfrastructureSection } from '@/components/website/home/broadcasting-infrastructure-section';
 import { WorkflowSection } from '@/components/website/home/workflow-section';
 import { ArticlesSection } from '@/components/website/home/articles/articles-section';
 
-import {
-  equipmentCategoryLinks,
-  equipmentBrandLinks,
-  productionServiceLinks,
-  industriesServed,
-  workflowSteps,
-} from '@/components/website/home/home-page.data';
+import { workflowSteps } from '@/components/website/home/home-page.data';
 
 import SectionSkeleton from '@/components/shared/skeletons/section-skeletion';
 import { homeSchema } from '@/utils/seo/schema/home/home-schema';
 
 export async function generateMetadata(): Promise<Metadata> {
   const metaData = createEnhancedMetadata({
-    title: 'MAP Media Art Production | Production Infrastructure Partner',
+    title: 'MAP Media Art Production | Film, broadcast, and production',
     description:
-      'MAP is your production infrastructure partner in Dubai. Film, broadcast & production solutions—equipment rental, broadcasting, and full-service video production across the UAE and Gulf.',
+      'MAP produces programmes for companies, institutions, and live events from B29, Dubai Production City. Equipment rental, outside broadcast, and full production across the UAE and the Gulf.',
     pathname: '/',
     mainOverrides: {
       category: 'media production',
@@ -54,86 +46,26 @@ export default async function Page() {
         }}
       />
 
-      {/* 1. Hero */}
-      <PageHero
-        title="Film, Broadcast & Production Solutions"
-        description="MAP is your production infrastructure partner. Equipment rental, broadcasting solutions, and full-service video production for agencies, broadcasters, and production companies across the UAE and Gulf."
-        buttons={[
-          { text: 'Rent Equipment', href: '/equipment-rental' },
-          { text: 'Request Production Support', href: '/contact?subject=production-support', variant: 'outline' },
-          { text: 'Broadcasting Support', href: '/broadcasting', variant: 'outline' },
-        ]}
-        minHeight="60vh"
-      />
+      <HomeHero />
+      <HomeIntro />
+      <WhatWeDoSection />
 
-      {/* 2. What We Do - Core Business Units */}
-      <PageSection>
-        <PageIntro
-          title="What We Do – Core Business Units"
-          paragraphs={[
-            'MAP is your production infrastructure partner. We provide equipment rental, broadcasting solutions, and full-service production across Dubai and the Gulf.',
-          ]}
-        />
-      </PageSection>
+      <HomeEquipment />
+      <HomeFeaturePanels />
+      <HomeIndustries />
+      <WorkflowSection steps={workflowSteps} />
 
-      <PageSection>
-        <WhatWeDoSection />
-      </PageSection>
-
-      {/* 3. Equipment Highlights */}
-      <PageSection>
-        <PageInternalLinks
-          title="Equipment Highlights"
-          description="Professional camera, lens, and lighting rental. Browse equipment from top brands including ARRI, Sony, Canon, and Zeiss."
-          links={[...equipmentCategoryLinks, ...equipmentBrandLinks]}
-        />
-      </PageSection>
-
-      {/* 4. Broadcasting Infrastructure */}
-      <PageSection>
-        <BroadcastingInfrastructureSection />
-      </PageSection>
-
-      {/* 5. Production Services */}
-      <PageSection>
-        <PageInternalLinks
-          title="Production Services"
-          description="Full-service video production from commercial and corporate filming to event coverage and studio production."
-          links={productionServiceLinks}
-        />
-      </PageSection>
-
-      {/* 6. Industries Served */}
-      <PageSection>
-        <PageUseCasesGrid
-          title="Industries Served"
-          description="We serve advertising agencies, film production companies, corporate clients, government entities, event organizers, and broadcasters."
-          items={industriesServed}
-          cols={3}
-        />
-      </PageSection>
-
-      {/* 7. Workflow / Process */}
-      <PageSection>
-        <WorkflowSection steps={workflowSteps} />
-      </PageSection>
-
-      {/* 8. Articles */}
       <PageSection>
         <Suspense fallback={<SectionSkeleton />}>
           <ArticlesSection />
         </Suspense>
       </PageSection>
 
-      {/* CTA */}
-      <PageSection>
-        <CTASection
-          title="Ready to Get Started?"
-          description="Request a quote, rent equipment, or speak with our team about your production needs in Dubai and the UAE."
-          buttons={[{ text: 'Request Quote', href: '/contact?subject=rfq' }]}
-          offices={[]}
-        />
-      </PageSection>
+      <CTASection
+        title="Tell us the date and the venue"
+        description="MAP replies with the crew, the kit, and a written proposal."
+        buttons={[{ text: 'Request a proposal', href: '/contact?subject=rfq' }]}
+      />
     </div>
   );
 }

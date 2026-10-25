@@ -1,32 +1,21 @@
 'use client';
 
-import { zodResolver } from '@hookform/resolvers/zod';
-
-import { useForm } from 'react-hook-form';
-import { toast } from 'sonner';
+import ResponseError from '@/components/shared/response-error';
+import { LoadingButton } from '@/components/shared/buttons/loading-button';
 import { Button } from '@/components/ui/button';
-import EquipmentCategoryFormFields from './equipment-category-form-fields';
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-} from '@/components/ui/dialog';
+import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Form } from '@/components/ui/form';
-
 import { useEquipmentCategoryMutations } from '@/hooks/api/equipments/equipment-categories/mutations';
-
+import type { IEquipmentCategory } from '@/types/equipments/equipment-category.type';
+import { getChangedValues } from '@/utils/format';
 import {
   updateEquipmentCategorySchema,
   type TUpdateEquipmentCategoryForm,
 } from '@/validations/equipments/categories/update-equipment-category.schema';
-import { LoadingButton } from '@/components/shared/buttons/loading-button';
-import type { IEquipmentCategory } from '@/types/equipments/equipment-category.type';
-import { getChangedValues } from '@/utils/format';
-import { Separator } from '@/components/ui/separator';
-import ResponseError from '@/components/shared/response-error';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { useForm } from 'react-hook-form';
+import { toast } from 'sonner';
+import EquipmentCategoryFormFields from './equipment-category-form-fields';
 
 interface EditEquipmentCategoryFormProps {
   isOpen: boolean;
@@ -50,48 +39,43 @@ function EditEquipmentCategoryForm({ isOpen, onClose, category }: EditEquipmentC
   });
 
   const onSubmit = async (data: TUpdateEquipmentCategoryForm) => {
-    const changedValues = getChangedValues(
-      form.formState.defaultValues as TUpdateEquipmentCategoryForm,
-      data,
-    );
+    const changedValues = getChangedValues(form.formState.defaultValues as TUpdateEquipmentCategoryForm, data);
 
     if (!Object.keys(changedValues).length) {
-      toast.error('No changes to update');
+      toast.error('No changes to save');
       return;
     }
 
     try {
       await update.mutateAsync({ id: category.id, data: changedValues });
-      toast.success('Equipment category updated successfully');
-
+      toast.success('Category saved');
       onClose();
     } catch (error) {
-      const errorMessage = (error as Error)?.message || 'Failed to update equipment category';
-      toast.error(errorMessage);
+      toast.error((error as Error)?.message || 'Could not save the category');
     }
   };
 
   return (
-    <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="max-h-[600px] overflow-y-auto sm:max-h-[650px] sm:max-w-[600px]">
-        <DialogHeader>
-          <DialogTitle className="text-start">Edit Equipment Category</DialogTitle>
-          <DialogDescription className="text-start">Update equipment category information.</DialogDescription>
+    <Dialog open={isOpen} onOpenChange={open => !open && onClose()}>
+      <DialogContent className="gap-0 overflow-hidden p-0 sm:max-w-xl">
+        <DialogHeader className="border-border border-b px-6 py-5">
+          <DialogTitle>Edit category</DialogTitle>
+          <DialogDescription>{category.name}</DialogDescription>
         </DialogHeader>
         <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-5 px-6 py-5">
             <EquipmentCategoryFormFields />
-
-            <Separator />
-
-            {/* Response Error */}
-            {<ResponseError error={update.error as Error} />}
-
+            <ResponseError error={(update.error as Error) ?? null} />
             <DialogFooter>
               <Button type="button" variant="outline" onClick={onClose} disabled={update.isPending}>
                 Cancel
               </Button>
-              <LoadingButton isLoading={update.isPending} loadingText="Updating..." defaultText="Update" />
+              <LoadingButton
+                isLoading={update.isPending}
+                loadingText="Saving…"
+                defaultText="Save changes"
+                disabled={!form.formState.isDirty}
+              />
             </DialogFooter>
           </form>
         </Form>

@@ -11,6 +11,8 @@ import { IntentSmartBadges } from '@/components/website/intents/intent-smart-bad
 import { IntentEquipmentFilters } from '@/components/website/intents/intent-equipment-filters';
 import { IntentEquipmentGrid } from '@/components/website/intents/intent-equipment-grid';
 import { CTASection } from '@/components/website/common/cta-section';
+import { displayTitleClassName } from '@/components/website/common/marketing-styles';
+import { cn } from '@/lib/utils';
 import { Suspense } from 'react';
 import { EquipmentGridSkeleton } from '@/components/website/equipments/equipment-grid-skeleton';
 import SafeHtmlContent from '@/components/shared/safe-html-content';
@@ -64,30 +66,36 @@ export default async function EquipmentRentalIntentPage({ params, searchParams }
   const brandsList = brandsData || [];
 
   return (
-    <>
-      <div className="pt-edge-nav-margin" />
+    <div className="bg-background min-h-screen">
+      <section className="pt-[4.5rem]">
+        <div className="container pt-8 pb-8 md:pt-12 md:pb-10">
+          <IntentBreadcrumb breadcrumbs={intent.breadcrumbs} />
+          <header className="mt-6 max-w-3xl">
+            <h1 className={cn(displayTitleClassName, 'text-3xl md:text-5xl')}>
+              {intent.h1 || 'Equipment rental'}
+            </h1>
+            <div className="bg-primary mt-5 h-px w-12" aria-hidden />
+            {intent.subHeading ? (
+              <p className="text-muted-foreground mt-5 max-w-2xl text-base leading-relaxed font-light md:text-lg">
+                {intent.subHeading}
+              </p>
+            ) : null}
+          </header>
+          {intent.smartBadges?.length > 0 ? (
+            <div className="mt-8">
+              <IntentSmartBadges smartBadges={intent.smartBadges} />
+            </div>
+          ) : null}
+        </div>
+      </section>
 
-      <section className="bg-background sticky top-0 z-40 mb-8 border-b py-2 md:py-0">
+      <section className="border-border bg-background/95 sticky top-[4.5rem] z-40 border-y backdrop-blur-md">
         <div className="container">
           <IntentEquipmentFilters categories={categoriesList} brands={brandsList} />
         </div>
       </section>
 
-      <section className="relative z-10 container">
-        <div className="mb-10 space-y-4">
-          <IntentBreadcrumb breadcrumbs={intent.breadcrumbs} />
-          <IntentSmartBadges smartBadges={intent.smartBadges} />
-        </div>
-
-        <div className="mb-6">
-          {intent.h1 && (
-            <h1 className="text-2xl md:text-3xl font-bold tracking-tight">{intent.h1}</h1>
-          )}
-          {intent.subHeading && (
-            <p className="mt-2 text-sm text-muted-foreground md:text-base">{intent.subHeading}</p>
-          )}
-        </div>
-
+      <section className="container py-12 md:py-16">
         <Suspense
           key={JSON.stringify({ ...intent.equipmentFilters, ...searchParamsRecord })}
           fallback={<EquipmentGridSkeleton />}
@@ -98,32 +106,31 @@ export default async function EquipmentRentalIntentPage({ params, searchParams }
           />
         </Suspense>
 
-        {intent.content && (
-          <div>
-            <SafeHtmlContent content={intent.content} className="mt-12 border-t pt-8" size='sm' />
-          </div>
-        )}
+        {intent.content ? (
+          <SafeHtmlContent
+            content={intent.content}
+            className="prose-headings:font-medium mt-16 border-t pt-12"
+            size="sm"
+          />
+        ) : null}
 
-        {intent.internalLinks?.length > 0 && (
-          <div className="mt-12 border-t pt-8">
-            <h2 className="mb-4 text-lg font-semibold">Related</h2>
+        {intent.internalLinks?.length > 0 ? (
+          <div className="border-border mt-16 border-t pt-12">
+            <h2 className="mb-6 text-sm font-medium tracking-[0.16em] uppercase">Related</h2>
             <IntentInternalLinks internalLinks={intent.internalLinks} />
           </div>
-        )}
+        ) : null}
 
-        <IntentFAQ intent={intent} />
+        <div className="border-border mt-16 border-t pt-12">
+          <IntentFAQ intent={intent} />
+        </div>
       </section>
 
-      <div className="section-padding container">
-        <CTASection
-          title="Ready to Rent Your Equipment?"
-          description="Get in touch with our team to discuss your equipment rental needs. We'll help you find the perfect equipment for your project."
-          buttons={[
-            { text: 'Contact Us', href: '/contact' },
-            { text: 'View Equipment', href: '/equipment-rental' },
-          ]}
-        />
-      </div>
-    </>
+      <CTASection
+        title="Request a proposal"
+        description="Share the dates and the kit list. MAP will confirm availability from the stores in Dubai and send a written quote."
+        buttons={[{ text: 'Contact', href: '/contact' }]}
+      />
+    </div>
   );
 }

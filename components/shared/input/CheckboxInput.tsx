@@ -32,7 +32,7 @@ export function CheckboxInput<T extends FieldValues>({
             <Checkbox checked={field.value} onCheckedChange={field.onChange} disabled={disabled} />
           </FormControl>
           <div className="space-y-1 leading-none">
-            <FormLabel className="text-sm font-normal">{label}</FormLabel>
+            <FormLabel className="text-sm font-light">{label}</FormLabel>
             {description && <p className="text-sm text-muted-foreground">{description}</p>}
           </div>
           <FormMessage />

@@ -1,14 +1,13 @@
 import type { Metadata } from 'next';
-import { Mona_Sans } from 'next/font/google';
+import { Outfit } from 'next/font/google';
 import '@/app/globals.css';
 import { Toaster } from 'sonner';
 import QueryProvider from '@/providers/query-provider';
 import NextTopLoader from 'nextjs-toploader';
 
-export const monaSans = Mona_Sans({
-  weight: ['200', '300', '400', '500', '600', '700', '800', '900'],
+export const outfit = Outfit({
+  weight: ['300', '400', '500', '600', '700'],
   variable: '--font-en',
-  style: ['normal', 'italic'],
   subsets: ['latin'],
   display: 'swap',
 });
@@ -25,8 +24,8 @@ interface RootLayoutProps {
 
 export default async function RootLayout({ children }: Readonly<RootLayoutProps>) {
   return (
-    <html lang="en" className={`${monaSans.variable} light`} suppressHydrationWarning>
-      <body className={`${monaSans.className} antialiased`}>
+    <html lang="en" className={`${outfit.variable} light`} suppressHydrationWarning>
+      <body className={`${outfit.className} antialiased`}>
         <QueryProvider>
           <NextTopLoader color="var(--color-primary)" showSpinner={false} />
           <Toaster

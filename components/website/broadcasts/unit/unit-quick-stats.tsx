@@ -1,46 +1,36 @@
-import { Package, Settings, ImageIcon } from 'lucide-react';
-import { cn } from '@/lib/utils';
-import type { BroadcastUnit } from '@/types/broadcasts/broadcasts.types';
+import type { BroadcastUnitContent } from '@/content/broadcast-units/schema'
 
-interface UnitQuickStatsProps {
-  unit: BroadcastUnit;
-  className?: string;
+interface UnitFact {
+  label: string
+  value: string
 }
 
-export function UnitQuickStats({ unit, className }: UnitQuickStatsProps) {
-  const stats = [
-    unit.items && unit.items.length > 0 && {
-      icon: Package,
-      value: unit.items.length,
-      label: unit.items.length === 1 ? 'Item' : 'Items',
-    },
-    unit.specs && Object.keys(unit.specs).length > 0 && {
-      icon: Settings,
-      value: Object.keys(unit.specs).length,
-      label: Object.keys(unit.specs).length === 1 ? 'Spec' : 'Specs',
-    },
-    unit.gallery && unit.gallery.length > 0 && {
-      icon: ImageIcon,
-      value: unit.gallery.length,
-      label: unit.gallery.length === 1 ? 'Image' : 'Images',
-    },
-  ].filter(Boolean) as { icon: typeof Package; value: number; label: string }[];
+function factsFor(unit: BroadcastUnitContent): UnitFact[] {
+  const specs = unit.specs
+  const facts: UnitFact[] = []
 
-  if (stats.length === 0) return null;
+  if (specs.format) facts.push({ label: 'Format', value: specs.format })
+  if (specs.cameraChains) facts.push({ label: 'Cameras', value: String(specs.cameraChains) })
+  if (specs.visionMixer) facts.push({ label: 'Vision', value: specs.visionMixer })
+  else if (specs.visionMixers?.length) facts.push({ label: 'Vision', value: specs.visionMixers[0] })
+  if ('areaSqm' in specs && specs.areaSqm) facts.push({ label: 'Area', value: `${specs.areaSqm} m²` })
+  if (specs.routing && facts.length < 4) facts.push({ label: 'Routing', value: specs.routing })
+
+  return facts.slice(0, 4)
+}
+
+export function UnitQuickStats({ unit }: { unit: BroadcastUnitContent }) {
+  const facts = factsFor(unit)
+  if (facts.length === 0) return null
 
   return (
-    <div className={cn('flex flex-wrap gap-2', className)}>
-      {stats.map(({ icon: Icon, value, label }) => (
-        <span
-          key={label}
-          className="inline-flex items-center gap-2 rounded-full border border-border/60 bg-muted/30 px-4 py-2 text-sm"
-        >
-          <Icon className="text-primary h-4 w-4 shrink-0" />
-          <span className="font-semibold tabular-nums">{value}</span>
-          <span className="text-muted-foreground">{label}</span>
-        </span>
+    <ul className="mt-12 grid grid-cols-2 border-t border-white/10 sm:grid-cols-4">
+      {facts.map((fact, index) => (
+        <li key={fact.label} className={index > 0 ? 'border-white/10 py-5 sm:border-s sm:ps-6' : 'py-5'}>
+          <p className="text-[11px] font-medium tracking-[0.16em] text-white/50 uppercase">{fact.label}</p>
+          <p className="mt-2 text-sm font-light text-white">{fact.value}</p>
+        </li>
       ))}
-    </div>
-  );
+    </ul>
+  )
 }
-

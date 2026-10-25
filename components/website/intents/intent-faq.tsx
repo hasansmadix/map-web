@@ -1,4 +1,4 @@
-import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion';
+import { PageFaq } from '@/components/website/common/page-faq';
 import type { IIntent } from '@/types/intents/intent.type';
 
 const FAQ_QUESTION_TEMPLATES: Array<{
@@ -6,42 +6,40 @@ const FAQ_QUESTION_TEMPLATES: Array<{
   answer: (topic: string) => string;
 }> = [
     {
-      question: topic => `What types of ${topic} are available for rent?`,
+      question: topic => `Which ${topic} can be hired?`,
       answer: topic =>
-        `We offer a wide range of ${topic.toLowerCase()} for rent, from entry-level to professional grade. Browse our catalog to see available options, or contact us for personalized recommendations based on your project needs.`,
+        `MAP holds ${topic.toLowerCase()} for hire from the stores in Dubai Production City. Availability is confirmed against the dates of the engagement.`,
     },
     {
-      question: topic => `How much does it cost to rent ${topic}?`,
+      question: topic => `How is ${topic} quoted?`,
       answer: () =>
-        'Rental pricing varies based on equipment type, duration, and availability. We offer competitive rates for daily, weekly, and long-term rentals. Contact us or check individual equipment listings for detailed pricing.',
+        'The quote names the item, the dates, and the hire period. Daily and weekly rates are set when the dates are known.',
     },
     {
-      question: topic => `What is included when renting ${topic}?`,
+      question: topic => `What is included with ${topic}?`,
       answer: () =>
-        'Each rental typically includes the main equipment, essential accessories, and basic support. Additional accessories and support packages can be added. Full details are provided when you request a quote.',
+        'The hire includes the item and the accessories required to operate it. Additional kit is listed on the quote.',
     },
     {
-      question: topic => `How do I choose the right ${topic} for my project?`,
+      question: topic => `How is the right ${topic} chosen?`,
       answer: topic =>
-        `Choosing the right ${topic.toLowerCase()} depends on your project requirements, budget, and timeline. Our team can help you select the best option—contact us for a free consultation.`,
+        `The choice follows the production: format, dates, and the rest of the kit list. MAP will recommend a ${topic.toLowerCase()} against that brief.`,
     },
     {
-      question: topic => `What are the rental terms for ${topic}?`,
+      question: topic => `What are the terms for ${topic}?`,
       answer: () =>
-        'Standard rental terms include insurance requirements, deposit, and return conditions. Minimum rental periods may apply for certain equipment. All terms are clearly communicated before your booking is confirmed.',
+        'Terms cover the hire period, the deposit, and the return condition. They are set out in the quote before the item leaves the store.',
     },
     {
-      question: topic => `Can I rent ${topic} for short-term projects?`,
+      question: topic => `Can ${topic} be hired for a short engagement?`,
       answer: () =>
-        'Yes, we offer flexible rental periods from single days to several months. Short-term rentals are popular for productions, events, and one-off projects. Check availability for your preferred dates.',
+        'Yes. Items can be hired for a single day or for the run of a production. Dates are confirmed against the store diary.',
     },
     {
       question: (topic, related) =>
-        related
-          ? `What is the difference between ${topic} and other ${related} options?`
-          : `What should I consider when renting ${topic}?`,
+        related ? `How does ${topic} differ from ${related}?` : `What should be confirmed before hiring ${topic}?`,
       answer: topic =>
-        `When renting ${topic.toLowerCase()}, consider your project specs, compatibility with existing equipment, and whether you need additional accessories. Our experts can guide you through the selection process.`,
+        `Confirm the mount, the power, and the accessories the ${topic.toLowerCase()} needs to work with the rest of the kit.`,
     },
   ];
 
@@ -63,20 +61,9 @@ export function IntentFAQ({ intent }: IntentFAQProps) {
   const faqItems = generateFaqItems(intent);
 
   return (
-    <section className="mt-12 border-t pt-8">
-      <h2 className="mb-6 text-xl font-semibold">Frequently Asked Questions</h2>
-      <Accordion type="single" collapsible className="w-full">
-        {faqItems.map((faq, index) => (
-          <AccordionItem key={index} value={`faq-${index}`}>
-            <AccordionTrigger className="text-left text-sm font-medium cursor-pointer">
-              {faq.question}
-            </AccordionTrigger>
-            <AccordionContent className="text-muted-foreground text-sm">
-              {faq.answer}
-            </AccordionContent>
-          </AccordionItem>
-        ))}
-      </Accordion>
-    </section>
+    <PageFaq
+      title="Hiring questions"
+      items={faqItems.map(faq => ({ q: faq.question, a: faq.answer }))}
+    />
   );
 }

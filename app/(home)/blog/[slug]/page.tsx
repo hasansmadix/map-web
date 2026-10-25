@@ -2,15 +2,11 @@ import { notFound } from 'next/navigation';
 import type { Metadata } from 'next';
 import Image from 'next/image';
 import Link from 'next/link';
-import { ArrowLeft, Calendar, Clock, Eye, User, Tag, BookOpen, Sparkles, FileText } from 'lucide-react';
+import { ArrowRight } from 'lucide-react';
 
 import { articlesService } from '@/services/articles.service';
 
 import { createEnhancedMetadata } from '@/utils/seo/meta/enhanced-meta';
-import { Badge } from '@/components/ui/badge';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Separator } from '@/components/ui/separator';
-
 import { capitalizeEachWord } from '@/utils/format';
 import { formatDate } from '@/lib/utils';
 import type { Article } from '@/types/articles.types';
@@ -18,6 +14,10 @@ import { BlogArticleCard } from '@/components/website/blog/blog-article-card';
 import { ShareCard } from '@/components/website/blog/share-card';
 import SafeHtmlContent from '@/components/shared/safe-html-content';
 import { singleArticleSchema } from '@/utils/seo/schema/articles/single-article-schema';
+import { PageHero } from '@/components/website/common/page-hero';
+import { CTASection } from '@/components/website/common/cta-section';
+import { displayTitleClassName, textLinkOnDarkClassName } from '@/components/website/common/marketing-styles';
+import { cn } from '@/lib/utils';
 
 interface BlogPageProps {
   params: Promise<{
@@ -27,9 +27,21 @@ interface BlogPageProps {
 
 function calculateReadingTime(content: string): number {
   const wordsPerMinute = 200;
-  const text = content.replace(/<[^>]*>/g, ''); // Remove HTML tags
+  const text = content.replace(/<[^>]*>/g, '');
   const wordCount = text.trim().split(/\s+/).length;
   return Math.ceil(wordCount / wordsPerMinute);
+}
+
+function plainText(value: string) {
+  return value.replace(/<[^>]*>/g, ' ').replace(/\s+/g, ' ').trim();
+}
+
+function stripLeadingHeading(content: string, title: string) {
+  const match = content.match(/^\s*<h1[^>]*>([\s\S]*?)<\/h1>/i);
+  if (!match) return content;
+  const heading = plainText(match[1]);
+  if (heading.toLowerCase() !== title.trim().toLowerCase()) return content;
+  return content.slice(match[0].length).trim();
 }
 
 export async function generateMetadata({ params }: BlogPageProps): Promise<Metadata> {
@@ -84,21 +96,21 @@ export default async function BlogPage({ params }: BlogPageProps) {
   try {
     article = await articlesService.getBySlug(slug);
   } catch {
-    // Article not found
+    article = null;
   }
 
-  if (!article) {
-    notFound();
-  }
+  if (!article) notFound();
 
   const readingTime = calculateReadingTime(article.content || '');
-
-  // Markup Schema
   const jsonLd = await singleArticleSchema(article);
+  const topic = article.topics?.[0];
+  const eyebrow = article.isFeatured ? 'Featured' : topic ? capitalizeEachWord(topic) : 'Blog';
+  const lead = plainText(article.excerpt || '') || 'A note from MAP Media Art Production.';
+  const cover = article.image;
+  const coverIsRemote = !!cover && (cover.includes('supabase.co') || cover.includes('unsplash.com') || cover.startsWith('http'));
 
   return (
-    <div className="bg-background relative min-h-screen">
-      {/* JSON-LD */}
+    <div className="bg-background min-h-screen">
       <script
         id="article-jsonld"
         type="application/ld+json"
@@ -106,225 +118,164 @@ export default async function BlogPage({ params }: BlogPageProps) {
           __html: JSON.stringify(jsonLd).replace(/</g, '\\u003c'),
         }}
       />
-      {/* Decorative Orbs */}
-      <div className="pointer-events-none fixed inset-0 overflow-hidden">
-        <div className="orb-blue absolute -top-32 -left-32 h-96 w-96" />
-        <div className="orb-purple absolute -right-32 -bottom-32 h-96 w-96" />
-      </div>
 
-      {/* Hero Section */}
-      <div className="pt-edge-nav-margin relative h-[60vh] w-full overflow-hidden md:h-[70vh]">
-        {article.image ? (
-          <>
-            <Image src={article.image} alt={article.name} fill className="object-cover" priority />
-            <div className="absolute inset-0 bg-linear-to-t from-black/80 via-black/50 to-transparent" />
-          </>
-        ) : (
-          <div className="bg-muted absolute inset-0" />
-        )}
+      <PageHero
+        eyebrow={eyebrow}
+        title={article.name}
+        description={lead}
+        breadcrumbs={[
+          { label: 'Home', href: '/' },
+          { label: 'Blog', href: '/blog' },
+          { label: article.name },
+        ]}
+        buttons={[]}
+      />
 
-        {/* Content Overlay */}
-        <div className="relative z-10 container mx-auto flex h-full max-w-7xl flex-col justify-end px-6 py-10">
-          <div className="space-y-4">
-            <div className="flex flex-wrap items-center gap-2">
-              {article.isFeatured && (
-                <Badge variant="default" className="text-sm font-medium">
-                  <Sparkles className="mr-1 h-3 w-3" />
-                  Featured
-                </Badge>
-              )}
-              {article?.topics?.slice(0, 3).map(topic => (
-                <Badge key={topic} variant="secondary" className="text-sm">
-                  <BookOpen className="mr-1 h-3 w-3" />
-                  {capitalizeEachWord(topic)}
-                </Badge>
-              ))}
-            </div>
+      <section className="py-16 md:py-24">
+        <div className="container grid grid-cols-1 gap-12 lg:grid-cols-12 lg:gap-16">
+          <article className="lg:col-span-8">
+            {cover ? (
+              <figure className="bg-muted relative mb-10 aspect-[16/9] max-w-3xl">
+                <Image
+                  src={cover}
+                  alt=""
+                  fill
+                  priority
+                  sizes="(min-width: 768px) 48rem, 100vw"
+                  className="object-cover"
+                  unoptimized={coverIsRemote}
+                />
+              </figure>
+            ) : null}
+            <p className="text-muted-foreground mb-10 max-w-3xl text-[11px] font-medium tracking-[0.16em] uppercase">
+              <time dateTime={article.createdAt}>{formatDate(article.createdAt)}</time>
+              {readingTime > 0 ? ` · ${readingTime} min read` : ''}
+              {article.author?.name ? ` · ${article.author.name}` : ''}
+            </p>
+            <SafeHtmlContent
+              content={stripLeadingHeading(article.content || '', article.name)}
+              className={articleProseClassName}
+            />
 
-            <h1 className="max-w-3xl text-4xl font-semibold text-white md:text-5xl">{article.name}</h1>
-
-            {article.excerpt && (
-              <p className="max-w-2xl text-lg text-white/90 md:text-xl">{article.excerpt}</p>
-            )}
-
-            {/* Article Meta */}
-            <div className="flex flex-wrap items-center gap-4 text-sm text-white/80">
-              {article.author && (
-                <div className="flex items-center gap-2">
-                  <User className="h-4 w-4" />
-                  <span>{article.author.name}</span>
-                </div>
-              )}
-              <div className="flex items-center gap-2">
-                <Calendar className="h-4 w-4" />
-                <span>{formatDate(article.createdAt)}</span>
-              </div>
-              {readingTime > 0 && (
-                <div className="flex items-center gap-2">
-                  <Clock className="h-4 w-4" />
-                  <span>{readingTime} min read</span>
-                </div>
-              )}
-              <div className="flex items-center gap-2">
-                <Eye className="h-4 w-4" />
-                <span>{article.viewCount || 0} views</span>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      {/* Main Content */}
-      <div className="relative z-10 container mx-auto max-w-7xl px-6 py-10">
-        <div className="grid grid-cols-1 gap-8 lg:grid-cols-3">
-          {/* Main Content Column */}
-          <div className="space-y-8 lg:col-span-2">
-            {/* Article Content */}
-            <section>
-              <Card className="glass-card">
-                <CardContent className="pt-6">
-                  <SafeHtmlContent content={article.content} />
-                </CardContent>
-              </Card>
-            </section>
-
-            {/* Tags Section */}
-            {article?.tags?.length > 0 && (
-              <section>
-                <div className="mb-4 flex items-center gap-2">
-                  <div className="bg-primary/10 flex h-10 w-10 items-center justify-center rounded-lg">
-                    <Tag className="text-primary h-5 w-5" />
-                  </div>
-                  <h2 className="text-xl font-semibold">Tags</h2>
-                </div>
-                <div className="flex flex-wrap gap-2">
+            {article.tags?.length > 0 ? (
+              <div className="border-border mt-12 border-t pt-8">
+                <p className="text-muted-foreground text-[11px] font-medium tracking-[0.16em] uppercase">Tags</p>
+                <ul className="mt-4 flex flex-wrap gap-2">
                   {article.tags.map(tag => (
-                    <Badge key={tag} variant="outline" className="text-sm">
+                    <li key={tag} className="border-border border px-3 py-1.5 text-sm font-light">
                       {capitalizeEachWord(tag)}
-                    </Badge>
+                    </li>
                   ))}
-                </div>
-              </section>
-            )}
+                </ul>
+              </div>
+            ) : null}
+          </article>
 
-            {/* Related Articles */}
-            {article.relatedArticles && article.relatedArticles.length > 0 && (
-              <section>
-                <div className="mb-4 flex items-center gap-2">
-                  <div className="bg-primary/10 flex h-10 w-10 items-center justify-center rounded-lg">
-                    <FileText className="text-primary h-5 w-5" />
-                  </div>
-                  <h2 className="text-xl font-semibold">Related Articles</h2>
-                </div>
-                <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
-                  {article.relatedArticles.map(relatedArticle => (
-                    <BlogArticleCard key={relatedArticle.id} article={relatedArticle} />
-                  ))}
-                </div>
-              </section>
-            )}
-          </div>
+          <aside className="lg:col-span-4">
+            <div className="space-y-8 lg:sticky lg:top-28">
+              <div className="bg-foreground p-6 text-white md:p-8">
+                <p className="text-[11px] font-medium tracking-[0.16em] text-white/50 uppercase">Proposal</p>
+                <p className={cn(displayTitleClassName, 'mt-3 text-2xl text-white')}>Plan a production</p>
+                <p className="mt-3 text-sm leading-relaxed font-light text-white/70">
+                  Share the date, the format, and where the programme needs to play. MAP will reply with a crew and a written proposal.
+                </p>
+                <Link href="/contact" className={cn(textLinkOnDarkClassName, 'mt-6')}>
+                  Contact
+                  <ArrowRight className="size-3.5 transition-transform group-hover:translate-x-1" />
+                </Link>
+              </div>
 
-          {/* Sidebar Column */}
-          <div className="space-y-6">
-            {/* Article Info Card */}
-            <Card className="glass-card">
-              <CardHeader>
-                <div className="flex items-center gap-3">
-                  <div className="bg-primary/10 flex h-10 w-10 items-center justify-center rounded-lg">
-                    <FileText className="text-primary h-5 w-5" />
-                  </div>
-                  <CardTitle className="text-xl">Article Details</CardTitle>
-                </div>
-              </CardHeader>
-              <CardContent className="space-y-4">
-                {article.author && (
-                  <div className="flex items-start gap-3">
-                    <User className="text-muted-foreground mt-0.5 h-4 w-4" />
-                    <div className="flex-1">
-                      <p className="text-muted-foreground mb-1 text-sm font-medium">Author</p>
-                      <div className="flex items-center gap-2">
-                        {article.author.image && (
+              <div className="border-border border p-6 md:p-8">
+                <dl className="space-y-6">
+                  {article.author ? (
+                    <div>
+                      <dt className="text-muted-foreground text-[11px] font-medium tracking-[0.16em] uppercase">Author</dt>
+                      <dd className="mt-3 flex items-center gap-3">
+                        {article.author.image ? (
                           <Image
                             src={article.author.image}
-                            alt={article.author.name}
-                            width={32}
-                            height={32}
-                            className="rounded-full"
+                            alt=""
+                            width={40}
+                            height={40}
+                            className="size-10 object-cover"
                             unoptimized={
-                              article.author.image.includes('supabase.co') ||
-                              article.author.image.includes('unsplash.com')
+                              article.author.image.includes('supabase.co') || article.author.image.includes('unsplash.com')
                             }
                           />
-                        )}
-                        <p className="text-base font-medium">{article.author.name}</p>
-                      </div>
-                      {article.author.bio && (
-                        <p className="text-muted-foreground mt-1 text-sm">{article.author.bio}</p>
-                      )}
+                        ) : null}
+                        <span className="text-sm font-medium">{article.author.name}</span>
+                      </dd>
+                      {article.author.bio ? (
+                        <dd className="text-muted-foreground mt-3 text-sm font-light">{article.author.bio}</dd>
+                      ) : null}
                     </div>
+                  ) : null}
+
+                  <div>
+                    <dt className="text-muted-foreground text-[11px] font-medium tracking-[0.16em] uppercase">Published</dt>
+                    <dd className="mt-2 text-sm font-medium">{formatDate(article.createdAt)}</dd>
                   </div>
-                )}
 
-                <Separator />
-
-                <div className="flex items-start gap-3">
-                  <Calendar className="text-muted-foreground mt-0.5 h-4 w-4" />
-                  <div className="flex-1">
-                    <p className="text-muted-foreground mb-1 text-sm font-medium">Published</p>
-                    <p className="text-base font-medium">{formatDate(article.createdAt)}</p>
-                  </div>
-                </div>
-
-                {readingTime > 0 && (
-                  <>
-                    <Separator />
-                    <div className="flex items-start gap-3">
-                      <Clock className="text-muted-foreground mt-0.5 h-4 w-4" />
-                      <div className="flex-1">
-                        <p className="text-muted-foreground mb-1 text-sm font-medium">Reading Time</p>
-                        <p className="text-base font-medium">{readingTime} minutes</p>
-                      </div>
+                  {readingTime > 0 ? (
+                    <div>
+                      <dt className="text-muted-foreground text-[11px] font-medium tracking-[0.16em] uppercase">
+                        Reading time
+                      </dt>
+                      <dd className="mt-2 text-sm font-medium">{readingTime} min</dd>
                     </div>
-                  </>
-                )}
+                  ) : null}
 
-                <Separator />
-
-                <div className="flex items-start gap-3">
-                  <Eye className="text-muted-foreground mt-0.5 h-4 w-4" />
-                  <div className="flex-1">
-                    <p className="text-muted-foreground mb-1 text-sm font-medium">Views</p>
-                    <p className="text-base font-medium">{article.viewCount || 0}</p>
-                  </div>
-                </div>
-
-                {article?.topics?.length > 0 && (
-                  <>
-                    <Separator />
-                    <div className="flex items-start gap-3">
-                      <BookOpen className="text-muted-foreground mt-0.5 h-4 w-4" />
-                      <div className="flex-1">
-                        <p className="text-muted-foreground mb-1 text-sm font-medium">Topics</p>
-                        <div className="mt-2 flex flex-wrap gap-2">
-                          {article.topics.map(topic => (
-                            <Badge key={topic} variant="secondary" className="text-xs">
-                              {capitalizeEachWord(topic)}
-                            </Badge>
-                          ))}
-                        </div>
-                      </div>
+                  {article.topics?.length > 0 ? (
+                    <div>
+                      <dt className="text-muted-foreground text-[11px] font-medium tracking-[0.16em] uppercase">Topics</dt>
+                      <dd className="mt-3 flex flex-wrap gap-2">
+                        {article.topics.map(item => (
+                          <span key={item} className="border-border border px-3 py-1.5 text-xs font-light">
+                            {capitalizeEachWord(item)}
+                          </span>
+                        ))}
+                      </dd>
                     </div>
-                  </>
-                )}
-              </CardContent>
-            </Card>
+                  ) : null}
+                </dl>
 
-            {/* Share Card */}
-            <ShareCard articleName={article.name} articleSlug={article.slug} />
-          </div>
+                <ShareCard articleName={article.name} articleSlug={article.slug} />
+              </div>
+            </div>
+          </aside>
         </div>
-      </div>
+      </section>
+
+      {article.relatedArticles && article.relatedArticles.length > 0 ? (
+        <section className="border-border bg-muted border-t py-16 md:py-24">
+          <div className="container">
+            <h2 className={cn(displayTitleClassName, 'mb-10 text-3xl md:text-4xl')}>Further reading</h2>
+            <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
+              {article.relatedArticles.map(relatedArticle => (
+                <BlogArticleCard key={relatedArticle.id} article={relatedArticle} />
+              ))}
+            </div>
+          </div>
+        </section>
+      ) : null}
+
+      <CTASection
+        title="Request a proposal"
+        description="Share the date, the format, and where the programme needs to play. MAP will reply with a crew and a written proposal."
+        buttons={[{ text: 'Contact', href: '/contact' }]}
+      />
     </div>
   );
 }
+
+const articleProseClassName = [
+  'max-w-3xl',
+  'prose-headings:font-medium prose-headings:tracking-tight',
+  'prose-h2:mt-14 prose-h2:text-2xl md:prose-h2:text-3xl',
+  'prose-h3:mt-10 prose-h3:text-xl',
+  'prose-p:font-light md:prose-p:text-lg md:prose-p:leading-8',
+  'prose-li:font-light',
+  'prose-strong:font-medium',
+  'prose-blockquote:border-primary prose-blockquote:font-light prose-blockquote:not-italic',
+  'prose-img:rounded-none',
+].join(' ');

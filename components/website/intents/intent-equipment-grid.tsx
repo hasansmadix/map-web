@@ -1,5 +1,3 @@
-import { Wrench } from 'lucide-react';
-import EmptyState from '@/components/shared/data-states/empty-state';
 import CustomPagination from '@/components/shared/pagination/custom-pagination';
 import { equipmentsService } from '@/services/equipments/equipments.service';
 import { EquipmentCard } from '@/components/website/equipments/equipment-card';
@@ -60,16 +58,17 @@ export async function IntentEquipmentGrid({
   const equipments = res.data || [];
   const pagination = res.pagination;
 
-  if (!equipments.length && equipmentParams.search) {
-    return (
-      <EmptyState
-        type="no-filter-results"
-        description={`No results found for "${equipmentParams.search}"`}
-      />
-    );
-  }
   if (!equipments.length) {
-    return <EmptyState type="no-data" icon={<Wrench />} />;
+    return (
+      <div className="border-border border px-6 py-16">
+        <p className="text-sm font-medium">{equipmentParams.search ? 'No matching items' : 'No items in this catalogue'}</p>
+        <p className="text-muted-foreground mt-2 text-sm font-light">
+          {equipmentParams.search
+            ? 'Try another term, or clear the filters.'
+            : 'Items will appear here when they are published.'}
+        </p>
+      </div>
+    );
   }
 
   return (

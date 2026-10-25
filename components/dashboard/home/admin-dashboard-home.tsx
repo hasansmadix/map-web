@@ -21,12 +21,13 @@ export function AdminDashboardHome({ staffName }: AdminDashboardHomeProps) {
   return (
     <div className="space-y-8">
       <div className="flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between">
-        <div className="space-y-1">
+        <div className="space-y-3">
+          <span className="bg-primary block h-px w-12" aria-hidden />
           <div className="flex flex-wrap items-center gap-2">
-            <h1 className="text-2xl font-semibold tracking-tight">{title}</h1>
+            <h1 className="map-page-title">{title}</h1>
             <Badge variant="secondary">Admin</Badge>
           </div>
-          <p className="text-muted-foreground text-sm">{content.subtitle}</p>
+          <p className="text-muted-foreground text-sm font-light">{content.subtitle}</p>
         </div>
 
         <div className="flex flex-wrap gap-2">

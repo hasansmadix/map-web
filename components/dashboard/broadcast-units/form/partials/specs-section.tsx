@@ -1,25 +1,17 @@
 'use client';
 
 import { useFormContext } from 'react-hook-form';
-import { FormField, FormItem, FormLabel, FormMessage, FormControl } from '@/components/ui/form';
 import { TextInput } from '@/components/shared/input/TextInput';
 import { NumericInput } from '@/components/shared/input/NumericInput';
 import ArrayInput from '@/components/shared/input/ArrayInput';
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
-
 export function SpecsSection() {
   const { control } = useFormContext();
 
   return (
-    <Card>
-      <CardHeader>
-        <CardTitle>Specifications</CardTitle>
-        <CardDescription>Technical specifications for this broadcast unit</CardDescription>
-      </CardHeader>
-      <CardContent className="space-y-6">
+    <div className="space-y-6">
         {/* Video Production Specs */}
         <div className="space-y-4">
-          <h3 className="text-sm font-semibold text-muted-foreground uppercase tracking-wide">Video Production</h3>
+          <h3 className="text-muted-foreground text-[11px] font-medium tracking-[0.16em] uppercase">Video</h3>
           <div className="grid grid-cols-1 items-start gap-4 md:grid-cols-2">
             <TextInput
               control={control}
@@ -38,7 +30,7 @@ export function SpecsSection() {
 
         {/* Vision Mixing */}
         <div className="space-y-4">
-          <h3 className="text-sm font-semibold text-muted-foreground uppercase tracking-wide">Vision Mixing</h3>
+          <h3 className="text-muted-foreground text-[11px] font-medium tracking-[0.16em] uppercase">Vision</h3>
           <div className="grid grid-cols-1 items-start gap-4 md:grid-cols-2">
             <TextInput
               control={control}
@@ -56,7 +48,7 @@ export function SpecsSection() {
 
         {/* Camera System */}
         <div className="space-y-4">
-          <h3 className="text-sm font-semibold text-muted-foreground uppercase tracking-wide">Camera System</h3>
+          <h3 className="text-muted-foreground text-[11px] font-medium tracking-[0.16em] uppercase">Cameras</h3>
           <div className="grid grid-cols-1 items-start gap-4 md:grid-cols-2">
             <NumericInput
               control={control}
@@ -76,7 +68,7 @@ export function SpecsSection() {
 
         {/* Audio */}
         <div className="space-y-4">
-          <h3 className="text-sm font-semibold text-muted-foreground uppercase tracking-wide">Audio</h3>
+          <h3 className="text-muted-foreground text-[11px] font-medium tracking-[0.16em] uppercase">Audio</h3>
           <div className="grid grid-cols-1 items-start gap-4 md:grid-cols-2">
             <TextInput
               control={control}
@@ -89,7 +81,7 @@ export function SpecsSection() {
 
         {/* Intercom */}
         <div className="space-y-4">
-          <h3 className="text-sm font-semibold text-muted-foreground uppercase tracking-wide">Intercom</h3>
+          <h3 className="text-muted-foreground text-[11px] font-medium tracking-[0.16em] uppercase">Intercom</h3>
           <div className="grid grid-cols-1 items-start gap-4 md:grid-cols-2">
             <TextInput
               control={control}
@@ -107,7 +99,7 @@ export function SpecsSection() {
 
         {/* Power */}
         <div className="space-y-4">
-          <h3 className="text-sm font-semibold text-muted-foreground uppercase tracking-wide">Power</h3>
+          <h3 className="text-muted-foreground text-[11px] font-medium tracking-[0.16em] uppercase">Power</h3>
           <div className="grid grid-cols-1 items-start gap-4 md:grid-cols-2">
             <TextInput
               control={control}
@@ -126,7 +118,7 @@ export function SpecsSection() {
 
         {/* Deployment */}
         <div className="space-y-4">
-          <h3 className="text-sm font-semibold text-muted-foreground uppercase tracking-wide">Deployment</h3>
+          <h3 className="text-muted-foreground text-[11px] font-medium tracking-[0.16em] uppercase">Deployment</h3>
           <div className="grid grid-cols-1 items-start gap-4 md:grid-cols-2">
             <TextInput
               control={control}
@@ -145,15 +137,14 @@ export function SpecsSection() {
 
         {/* Use Cases */}
         <div className="space-y-4">
-          <h3 className="text-sm font-semibold text-muted-foreground uppercase tracking-wide">Use Cases</h3>
+          <h3 className="text-muted-foreground text-[11px] font-medium tracking-[0.16em] uppercase">Use</h3>
           <ArrayInput
             name="specs.useCases"
             label="Use Cases"
             placeholder="Enter use case and press Enter or comma"
           />
         </div>
-      </CardContent>
-    </Card>
+    </div>
   );
 }
 

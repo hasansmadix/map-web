@@ -3,7 +3,6 @@
 import { useState, useMemo } from 'react';
 
 import { toast } from 'sonner';
-import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 
 import { DataTable } from '@/components/shared/table/data-table';
@@ -91,12 +90,12 @@ function EquipmentCategoriesTable() {
     try {
       await deleteCategory.mutateAsync(selectedCategory.id);
 
-      toast.success('Equipment category deleted successfully');
+      toast.success('Category deleted');
 
       setSelectedCategory(null);
       setActiveDialog(null);
     } catch (error) {
-      const errMsg = (error as Error).message || 'Failed to delete equipment category';
+      const errMsg = (error as Error).message || 'Could not delete the category';
 
       toast.error(errMsg);
       console.error('Error deleting equipment category:', error);
@@ -143,25 +142,24 @@ function EquipmentCategoriesTable() {
 
   return (
     <>
-      <Card>
         {/* ========================== Page Header ========================== */}
         <TableHeader
-          title={'Equipment Categories'}
+          title="Categories"
           total={total}
           currentPage={currentPage}
           totalPages={totalPages}
           isLoading={isPending}
           searchTerm={searchTerm}
+          onClearSearch={() => setSearch('')}
           filters={filterInfo}
           onClearAllFilters={clearAll}
           onAdd={handleAddCategory}
-          addButtonText={`Add Category`}
-          entityName={'Category'}
-          entityNamePlural={'Categories'}
+          addButtonText="Add category"
+          entityName="category"
+          entityNamePlural="categories"
         />
 
         {/* ========================== Table ========================== */}
-        <CardContent>
           <DataTable
             tableId="equipment-categories-table"
             columns={columns}
@@ -169,7 +167,7 @@ function EquipmentCategoriesTable() {
             isLoading={isPending}
             error={error}
             refetch={refetch}
-            emptyMessage={'No data found'}
+            emptyMessage="No categories match this list."
             pageIndex={currentPage}
             pageSize={pageSize}
             totalRows={total}
@@ -184,9 +182,10 @@ function EquipmentCategoriesTable() {
             initialGlobalFilter={searchTerm}
             manualFiltering={true}
             messages={{
-              searchPlaceholder: 'Search...',
-              noData: 'No data found',
+              searchPlaceholder: 'Search categories',
+              noData: 'No categories yet',
             }}
+            onRowClick={handleEdit}
             toolbarRight={
               <div className="flex flex-wrap items-center gap-2">
                 <SelectFilter
@@ -218,8 +217,6 @@ function EquipmentCategoriesTable() {
               </div>
             }
           />
-        </CardContent>
-      </Card>
 
       {/* ========================== Add Modal ========================== */}
       {activeDialog === 'add' && (
@@ -241,8 +238,8 @@ function EquipmentCategoriesTable() {
           open={activeDialog === 'delete'}
           onOpenChange={open => !open && setActiveDialog(null)}
           onConfirm={handleDeleteCategory}
-          title="Confirm Delete"
-          description="Are you sure you want to delete this equipment category? This action cannot be undone and will permanently remove the equipment category from the system."
+          title="Delete category"
+          description={`Delete ${selectedCategory?.name || 'this category'}? Items that use it will need another group.`}
           loadingText="Deleting..."
           isLoading={deleteCategory.isPending}
           variant="destructive"

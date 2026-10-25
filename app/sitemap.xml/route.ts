@@ -1,4 +1,4 @@
-import { generateBroadcastUrls, generateIntentUrls } from '@/utils/seo/sitemap/sitemap-utils';
+import { generateBroadcastUrls, generateIntentUrls, productionPaths } from '@/utils/seo/sitemap/sitemap-utils';
 import { NextResponse } from 'next/server';
 
 export const dynamic = 'force-dynamic';
@@ -53,8 +53,8 @@ async function generateSitemapEntities() {
       count: Math.ceil(intentUrlsCount / maxLocsPerSitemap),
     },
     {
-      entity: 'services',
-      count: Math.ceil(1 / maxLocsPerSitemap),
+      entity: 'production',
+      count: Math.ceil(productionPaths.length / maxLocsPerSitemap),
     },
     {
       entity: 'blog',

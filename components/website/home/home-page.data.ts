@@ -8,23 +8,20 @@ export const coreBusinessUnits: (PageFeatureItem & { href: string })[] = [
   {
     icon: Camera,
     title: 'Equipment Rental',
-    description:
-      'Camera, lens, lighting, and audio rental. Professional production equipment for your next project in Dubai and the UAE.',
+    description: 'Cameras, lenses, lighting, and audio, prepared for a shoot in Dubai and the UAE.',
     href: '/equipment-rental',
   },
   {
     icon: TvMinimal,
     title: 'Broadcasting Solutions',
-    description:
-      'Outside broadcast (OB van), portable broadcast systems, and multi-camera live production for events and conferences.',
+    description: 'Outside broadcast, live multi-camera production, and the vans, flypacks, and studio that carry it.',
     href: '/broadcasting',
   },
   {
     icon: Video,
-    title: 'Production Services',
-    description:
-      'Commercial, corporate, event filming, and studio production. Full-service video production from concept to delivery.',
-    href: '/services',
+    title: 'Production',
+    description: 'Commercials, corporate films, event coverage, live programmes, and studio sessions.',
+    href: '/production',
   },
 ];
 
@@ -50,21 +47,21 @@ export const equipmentBrandLinks = [
 export const broadcastingInfrastructure: (PageFeatureItem & { href: string })[] = [
   {
     icon: RadioTower,
-    title: 'OB Van Capability',
-    description: 'Full outside broadcast units for live events',
+    title: 'Outside broadcast',
+    description: 'A mobile production for a site that can take a vehicle.',
     href: '/broadcasting/outside-broadcast',
   },
   {
-    icon: Package2,
-    title: 'Portable Broadcast Units',
-    description: 'Compact, mobile broadcast solutions for indoor venues',
-    href: '/broadcasting/portable-broadcast-systems',
+    icon: Settings2,
+    title: 'Live production',
+    description: 'Switching, graphics, a record, and delivery of the live programme.',
+    href: '/broadcasting/live-production',
   },
   {
-    icon: Settings2,
-    title: 'Multi-Camera Live Production',
-    description: 'Professional multi-camera setups for events and conferences',
-    href: '/broadcasting',
+    icon: Package2,
+    title: 'OB vans',
+    description: 'The published vehicles and their specifications.',
+    href: '/broadcasting/ob-vans',
   },
 ];
 
@@ -72,10 +69,11 @@ export const broadcastingInfrastructure: (PageFeatureItem & { href: string })[] 
  * Production Services - Internal Links
  * ---------------------------------- */
 export const productionServiceLinks = [
-  { text: 'Commercial Production', href: '/commercial-video-production' },
-  { text: 'Corporate Filming', href: '/corporate-video-production' },
-  { text: 'Event Coverage', href: '/event-video-production' },
-  { text: 'Interview Filming', href: '/studio-video-production' },
+  { text: 'Commercial production', href: '/production/commercial-video-production' },
+  { text: 'Corporate film', href: '/production/corporate-video-production' },
+  { text: 'Event coverage', href: '/production/event-video-production' },
+  { text: 'Live production', href: '/production/live-event-production' },
+  { text: 'Studio sessions', href: '/production/studio-video-production' },
 ];
 
 /* ----------------------------------
@@ -94,9 +92,9 @@ export const industriesServed = [
  * Workflow / Process (deployment-style)
  * ---------------------------------- */
 export const workflowSteps = [
-  { step: '01', title: 'Planning', description: 'Site survey, technical planning, and venue integration.' },
-  { step: '02', title: 'Equipment Preparation', description: 'Gear selection, testing, and logistics.' },
-  { step: '03', title: 'Setup & Deployment', description: 'On-site installation and configuration.' },
-  { step: '04', title: 'Live Production', description: 'Full technical support during the event.' },
-  { step: '05', title: 'Breakdown', description: 'Strike, pack, and equipment return.' },
+  { step: '01', title: 'Planning', description: 'The venue, the programme, and the system are agreed before a date is held.' },
+  { step: '02', title: 'Preparation', description: 'Cameras, crew, and the unit are tested and packed.' },
+  { step: '03', title: 'Setup', description: 'The system is installed and lined up on site.' },
+  { step: '04', title: 'Production', description: 'MAP runs the day, in the studio or on the broadcast.' },
+  { step: '05', title: 'Strike', description: 'The set is cleared and the kit returns to Dubai Production City.' },
 ];

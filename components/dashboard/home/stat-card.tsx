@@ -15,22 +15,18 @@ function StatCard({ title, value, href, icon: Icon }: StatCardProps) {
   const displayValue = Number.isFinite(value) ? value.toLocaleString() : '—';
 
   return (
-    <Card className="group focus-within:ring-ring/50 relative overflow-hidden transition-shadow focus-within:ring-2 hover:shadow-sm">
-      <div className="pointer-events-none absolute inset-0 opacity-0 transition-opacity duration-300 group-hover:opacity-100">
-        <div className="bg-primary/10 absolute -top-24 -right-24 size-56 rounded-full blur-3xl" />
-        <div className="bg-secondary/20 absolute -bottom-28 -left-28 size-56 rounded-full blur-3xl" />
-      </div>
-
+    <Card className="group relative overflow-hidden shadow-none">
+      <span className="bg-primary absolute inset-x-0 top-0 h-px" aria-hidden />
       <CardHeader className="relative pb-2">
-        <CardTitle className="text-muted-foreground text-sm font-medium">{title}</CardTitle>
+        <CardTitle className="text-muted-foreground text-[11px] font-medium tracking-[0.16em] uppercase">{title}</CardTitle>
         <CardAction>
-          <div className="bg-muted/60 text-muted-foreground ring-border group-hover:bg-primary/10 group-hover:text-primary grid size-10 place-items-center rounded-lg ring-1 transition-colors">
-            <Icon className="size-5 shrink-0" />
+          <div className="text-primary ring-border grid size-10 place-items-center ring-1">
+            <Icon className="size-5 shrink-0" strokeWidth={1.5} />
           </div>
         </CardAction>
       </CardHeader>
       <CardContent className="relative space-y-2">
-        <div className="text-3xl font-semibold tracking-tight tabular-nums">{displayValue}</div>
+        <div className="text-primary text-3xl font-light tracking-tight tabular-nums">{displayValue}</div>
         <Button
           asChild
           variant="ghost"

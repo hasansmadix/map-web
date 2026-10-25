@@ -8,8 +8,9 @@ import { CheckboxInput } from '@/components/shared/input/CheckboxInput';
 
 import { MountType } from '@/types/equipments/equipment.enum';
 import type { TCreateEquipmentForm } from '@/validations/equipments/create-equipment.schema';
+import { equipmentOptions } from '../equipment-option-label';
 
-const mountOptions = Object.values(MountType).map(type => ({ value: type, label: type }));
+const mountOptions = equipmentOptions(Object.values(MountType));
 
 function LensSpecs() {
   const form = useFormContext<TCreateEquipmentForm>();

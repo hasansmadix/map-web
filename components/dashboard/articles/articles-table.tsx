@@ -3,15 +3,15 @@
 import { useState, useMemo } from 'react';
 
 import { toast } from 'sonner';
-import { Card, CardContent } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
 
-// import { DataTable } from '@/components/shared/table/data-table';
+import { DataTable } from '@/components/shared/table/data-table';
 
 import { useRouter } from 'next/navigation';
 import { useArticleMutations } from '@/hooks/api/articles/mutations';
 import { useArticlesController } from '@/hooks/api/articles/useArticlesController';
 
+import { useStaffMe } from '@/hooks/api/staff/useStaffMe';
+import { Role } from '@/types/roles.enum';
 import { useArticleColumns } from './columns';
 import { TableHeader, type FilterInfo } from '@/components/shared/table/table-header';
 
@@ -19,7 +19,6 @@ import type { Article } from '@/types/articles.types';
 import dynamic from 'next/dynamic';
 import DialogSkeleton from '../../shared/skeletons/dialog-skeleton';
 import { SelectFilter } from '@/components/shared/selects/select-filter';
-import { DataTable } from '@/components/shared/table/data-table/data-table';
 
 const ConfirmationDialogDynamic = dynamic(
   () => import('@/components/shared/confirmation-dialog').then(mod => mod.ConfirmationDialog),
@@ -31,6 +30,7 @@ const ConfirmationDialogDynamic = dynamic(
 
 export function ArticlesTable() {
   const router = useRouter();
+  const { isCurrentUser, isAuthor } = useStaffMe();
 
   const [articleToDelete, setArticleToDelete] = useState<Article | null>(null);
 
@@ -94,6 +94,7 @@ export function ArticlesTable() {
         key: 'isPublished',
         label: 'Status',
         value: publishedFilter ? 'Published' : 'Draft',
+        onRemove: () => setFilter('isPublished', undefined),
       });
     }
 
@@ -102,98 +103,96 @@ export function ArticlesTable() {
         key: 'isFeatured',
         label: 'Featured',
         value: featuredFilter ? 'Yes' : 'No',
+        onRemove: () => setFilter('isFeatured', undefined),
       });
     }
 
     return filters;
-  }, [publishedFilter, featuredFilter]);
-
-  console.log('publishedFilter', publishedFilter);
+  }, [publishedFilter, featuredFilter, setFilter]);
 
   return (
     <>
-      <Card>
-        {/* ========================== Page Header ========================== */}
-        <TableHeader
-          title="Articles Management"
-          total={total}
-          currentPage={currentPage}
-          totalPages={totalPages}
-          isLoading={isPending}
-          searchTerm={searchTerm}
-          filters={filterInfo}
-          onClearAllFilters={clearAll}
-          onAdd={handleAddArticle}
-          addButtonText={`Add Article`}
-          entityName="Article"
-          entityNamePlural="Articles"
-        />
+      <TableHeader
+        title="Articles"
+        total={total}
+        currentPage={currentPage}
+        totalPages={totalPages}
+        isLoading={isPending}
+        searchTerm={searchTerm}
+        filters={filterInfo}
+        onClearAllFilters={clearAll}
+        onClearSearch={() => setSearch('')}
+        onAdd={handleAddArticle}
+        addButtonText="Add article"
+        entityName="Article"
+        entityNamePlural="Articles"
+      />
 
-        {/* ========================== Table ========================== */}
-        <CardContent>
-          <DataTable
-            tableId="articles-v1"
-            data={articlesList}
-            columns={columns}
-            pageSize={pageSize}
-            onPageSizeChange={setPageSize}
-            initialGlobalFilter={searchTerm}
-            onGlobalFilterChange={setSearch}
-            manualFiltering={true}
-            messages={{
-              searchPlaceholder: 'Search...',
-              noData: 'No data found',
-            }}
-          >
-            <DataTable.Toolbar>
-              <DataTable.Search />
-              <div className="flex flex-wrap items-center gap-2">
-                <SelectFilter
-                  value={
-                    publishedFilter === undefined
-                      ? 'all'
-                      : (publishedFilter as unknown as string) === 'true'
-                        ? 'true'
-                        : 'false'
-                  }
-                  onValueChange={val =>
-                    setFilter('isPublished', val === undefined ? undefined : val === 'true' ? true : false)
-                  }
-                  options={[
-                    { value: 'true', label: 'Published' },
-                    { value: 'false', label: 'Draft' },
-                  ]}
-                  allOptionLabel="All Status"
-                  className="w-32"
-                />
-                <SelectFilter
-                  value={featuredFilter === undefined ? 'all' : featuredFilter ? 'yes' : 'no'}
-                  onValueChange={val =>
-                    setFilter('isFeatured', val === undefined ? undefined : val === 'yes' ? true : false)
-                  }
-                  options={[
-                    { value: 'yes', label: 'Yes' },
-                    { value: 'no', label: 'No' },
-                  ]}
-                  allOptionLabel="All Featured"
-                  className="w-32"
-                />
-                <DataTable.ColumnToggle />
-                <DataTable.PageSize />
-              </div>
-            </DataTable.Toolbar>
-
-            <DataTable.Content stickyHeader />
-
-            <DataTable.Pagination
-              onPageChange={setPage}
-              pageIndex={currentPage}
-              totalRows={total}
-              isLoading={isPending}
+      <DataTable
+        tableId="articles-v1"
+        columns={columns}
+        data={articlesList}
+        isLoading={isPending}
+        error={error}
+        refetch={refetch}
+        emptyMessage="No articles yet"
+        onRowClick={article => {
+          const isCurrent = isCurrentUser(article.author?.id);
+          const isViewingNonAuthor = article.author?.role !== Role.AUTHOR;
+          if (!isCurrent && isViewingNonAuthor && !isAuthor) return;
+          router.push(`/dashboard/articles/${article.id}`);
+        }}
+        pageIndex={currentPage}
+        pageSize={pageSize}
+        totalRows={total}
+        totalPages={totalPages}
+        canNextPage={currentPage < totalPages}
+        canPrevPage={currentPage > 1}
+        onPageChange={setPage}
+        onPageSizeChange={setPageSize}
+        enableGlobalFilter
+        onGlobalFilterChange={setSearch}
+        initialGlobalFilter={searchTerm}
+        manualFiltering
+        messages={{
+          searchPlaceholder: 'Search articles',
+          noData: 'No articles yet',
+        }}
+        toolbarRight={
+          <div className="flex flex-wrap items-center gap-2">
+            <SelectFilter
+              value={
+                publishedFilter === undefined
+                  ? 'all'
+                  : (publishedFilter as unknown as string) === 'true'
+                    ? 'true'
+                    : 'false'
+              }
+              onValueChange={val =>
+                setFilter('isPublished', val === undefined ? undefined : val === 'true' ? true : false)
+              }
+              options={[
+                { value: 'true', label: 'Published' },
+                { value: 'false', label: 'Draft' },
+              ]}
+              allOptionLabel="All status"
+              className="w-32"
             />
-          </DataTable>
-        </CardContent>
-      </Card>
+            <SelectFilter
+              value={featuredFilter === undefined ? 'all' : featuredFilter ? 'yes' : 'no'}
+              onValueChange={val =>
+                setFilter('isFeatured', val === undefined ? undefined : val === 'yes' ? true : false)
+              }
+              options={[
+                { value: 'yes', label: 'Yes' },
+                { value: 'no', label: 'No' },
+              ]}
+              allOptionLabel="All featured"
+              className="w-32"
+            />
+          </div>
+        }
+      />
 
       {/* ========================== Delete Modal ========================== */}
       {articleToDelete && (
@@ -201,8 +200,8 @@ export function ArticlesTable() {
           open={!!articleToDelete}
           onOpenChange={open => !open && setArticleToDelete(null)}
           onConfirm={handleDeleteArticle}
-          title="Confirm Delete"
-          description="Are you sure you want to delete this Article? This action cannot be undone and will permanently remove the Article from the system."
+          title={`Delete ${articleToDelete.name || 'this article'}`}
+          description={`This removes ${articleToDelete.name || 'the article'} from the blog.`}
           loadingText="Deleting..."
           isLoading={deleteArticle.isPending}
           variant="destructive"

@@ -1,7 +1,10 @@
 import { BroadcastUnitItemGroup, BroadcastType } from '@/types/broadcasts/broadcast.enums';
 
 export function formatGroup(group: BroadcastUnitItemGroup): string {
-  return group.replace(/_/g, ' ').replace(/\b\w/g, char => char.toUpperCase());
+  return group
+    .replace(/_/g, ' ')
+    .toLowerCase()
+    .replace(/\b\w/g, char => char.toUpperCase());
 }
 
 export function formatBroadcastType(type: BroadcastType | `${BroadcastType}`): string {
@@ -17,15 +20,15 @@ export function getTypeSlug(type: BroadcastType | `${BroadcastType}`): string {
 /** URL for "back to" / "view more" links when unit is under /broadcasting/units */
 export function getTypeBroadcastingUrl(type: BroadcastType | `${BroadcastType}`): string {
   const t = String(type);
-  if (t === 'OBVAN') return '/broadcasting/outside-broadcast';
-  if (t === 'FLIGHT_CASE') return '/broadcasting/portable-broadcast-systems';
+  if (t === 'OBVAN') return '/broadcasting/ob-vans';
+  if (t === 'FLIGHT_CASE') return '/broadcasting/flypacks';
   return '/broadcasting';
 }
 
 /** Display name for parent page in breadcrumb (matches page titles) */
 export function getTypeParentLabel(type: BroadcastType | `${BroadcastType}`): string {
   const t = String(type);
-  if (t === 'OBVAN') return 'Outside Broadcast';
-  if (t === 'FLIGHT_CASE') return 'Portable Broadcast Systems';
+  if (t === 'OBVAN') return 'Outside broadcast';
+  if (t === 'FLIGHT_CASE') return 'Portable systems';
   return 'Broadcasting';
 }

@@ -1,7 +1,7 @@
 'use client';
 
 import type { ColumnDef } from '@tanstack/react-table';
-import { Edit, MoreHorizontal, Trash2, FileText, Star, Calendar } from 'lucide-react';
+import { Edit, MoreHorizontal, Trash2, FileText, Star } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
@@ -16,14 +16,6 @@ import type { Article } from '@/types/articles.types';
 
 import { useStaffMe } from '@/hooks/api/staff/useStaffMe';
 import { Role } from '@/types/roles.enum';
-
-function formatDate(dateString: string) {
-  return new Date(dateString).toLocaleDateString('en-US', {
-    year: 'numeric',
-    month: 'short',
-    day: 'numeric',
-  });
-}
 
 export function useArticleColumns(opts: { onDelete: (article: Article) => void }): ColumnDef<Article>[] {
   const { onDelete } = opts;
@@ -40,7 +32,7 @@ export function useArticleColumns(opts: { onDelete: (article: Article) => void }
     // Article name
     {
       id: 'name',
-      header: 'Article Name',
+      header: 'Article',
       accessorKey: 'name',
       enableSorting: true,
       enableGlobalFilter: true,
@@ -48,12 +40,14 @@ export function useArticleColumns(opts: { onDelete: (article: Article) => void }
         const article = row.original;
         return (
           <div className="flex items-center gap-3">
-            <div className="bg-primary/10 flex h-10 w-10 items-center justify-center rounded-lg">
-              <FileText className="text-primary h-5 w-5" />
+            <div className="bg-primary/10 text-primary flex size-11 shrink-0 items-center justify-center">
+              <FileText className="size-4" />
             </div>
-            <div>
-              <div className="font-medium">{article.name || article.slug}</div>
-              <div className="text-muted-foreground text-sm">Author: {article.author.name}</div>
+            <div className="min-w-0">
+              <div className="max-w-md truncate font-medium">{article.name || article.slug}</div>
+              <div className="text-muted-foreground max-w-md truncate text-xs">
+                {article.author?.name} · /blog/{article.slug}
+              </div>
             </div>
           </div>
         );
@@ -98,35 +92,6 @@ export function useArticleColumns(opts: { onDelete: (article: Article) => void }
         );
       },
     },
-    // Topics
-    {
-      id: 'topics',
-      header: 'Topics',
-      enableSorting: false,
-      cell: ({ row }) => {
-        const article = row.original;
-        const topics = Array.isArray(article.topics) ? article.topics : [];
-
-        if (topics.length === 0) {
-          return <span className="text-muted-foreground text-sm">-</span>;
-        }
-
-        return (
-          <div className="flex max-w-md flex-wrap gap-1.5">
-            {topics.slice(0, 3).map((topic, index) => (
-              <Badge key={index} variant="outline" className="text-xs">
-                {topic}
-              </Badge>
-            ))}
-            {topics.length > 3 && (
-              <Badge variant="secondary" className="text-xs">
-                +{topics.length - 3}
-              </Badge>
-            )}
-          </div>
-        );
-      },
-    },
     // Status
     {
       id: 'status',
@@ -149,19 +114,6 @@ export function useArticleColumns(opts: { onDelete: (article: Article) => void }
         );
       },
     },
-    // Created date
-    {
-      id: 'createdAt',
-      header: 'Created At',
-      enableSorting: true,
-      accessorKey: 'createdAt',
-      cell: ({ row }) => (
-        <div className="flex items-center gap-2">
-          <Calendar className="text-muted-foreground h-4 w-4" />
-          <span className="text-sm">{formatDate(row.original.createdAt)}</span>
-        </div>
-      ),
-    },
     // Actions
     {
       id: 'actions',
@@ -178,6 +130,7 @@ export function useArticleColumns(opts: { onDelete: (article: Article) => void }
         }
 
         return (
+          <div onClick={event => event.stopPropagation()}>
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <Button variant="ghost" className="h-8 w-8 p-0">
@@ -195,6 +148,7 @@ export function useArticleColumns(opts: { onDelete: (article: Article) => void }
               </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
+          </div>
         );
       },
     },

@@ -36,7 +36,7 @@ export function MobileMediaProductionAccordion({ onLinkClick }: MobileMediaProdu
       >
         <div className="flex items-center gap-2.5">
           <Film className="h-4 w-4 text-muted-foreground group-hover:text-primary transition-colors" />
-          <span>Media Production</span>
+          <span>Production</span>
         </div>
         <ChevronDown
           className={cn(
@@ -78,7 +78,7 @@ export function MobileMediaProductionAccordion({ onLinkClick }: MobileMediaProdu
           <div className="pt-1.5 mt-1.5 border-t border-border/50">
             <SheetClose asChild>
               <Link
-                href="/services"
+                href="/production"
                 onClick={handleLinkClick}
                 className={cn(
                   'group flex items-center gap-3 rounded-md px-3 py-2.5',

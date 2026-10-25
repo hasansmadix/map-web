@@ -4,6 +4,7 @@ import type { Control, FieldPath, FieldValues } from 'react-hook-form';
 import { FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import { Textarea } from '@/components/ui/textarea';
 import { cn } from '@/lib/utils';
+import { fieldControlClassName, fieldLabelClassName } from '@/components/shared/input/field-styles';
 
 interface TextAreaInputProps<T extends FieldValues> {
   control: Control<T>;
@@ -29,6 +30,8 @@ export function TextAreaInput<T extends FieldValues>({
   disabled = false,
 }: TextAreaInputProps<T>) {
   const textareaStyles = cn(
+    fieldControlClassName,
+    'h-auto min-h-24',
     className,
     resize === 'none' && 'resize-none',
     resize === 'horizontal' && 'resize-x',
@@ -46,7 +49,7 @@ export function TextAreaInput<T extends FieldValues>({
       name={name}
       render={({ field }) => (
         <FormItem>
-          <FormLabel>{label}</FormLabel>
+          <FormLabel className={fieldLabelClassName}>{label}</FormLabel>
           <FormControl>
             <Textarea
               className={textareaStyles}

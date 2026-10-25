@@ -1,39 +1,36 @@
-import { broadcastTypes } from '@/components/website/broadcasts/data';
-import { broadcastsService } from '@/services/broadcasts.service';
 import { intentsService } from '@/services/intents/intents.service';
-
+import { listPublished } from '@/content/broadcast-units';
+import { unitPath } from '@/content/broadcast-units/schema';
 import { MetadataRoute } from 'next';
 
 const maxLocsPerSitemap = Number.parseInt(process.env.MAX_LOCS_PER_SITEMAP || '1000');
 
+const broadcastPaths = [
+  '/broadcasting',
+  '/broadcasting/outside-broadcast',
+  '/broadcasting/live-production',
+  '/broadcasting/sports-broadcasting',
+  '/broadcasting/transmission',
+  '/broadcasting/technical-crew',
+  '/broadcasting/ob-vans',
+  '/broadcasting/flypacks',
+  '/broadcasting/studios',
+  ...listPublished().map(unit => unitPath(unit)),
+]
+
+export const productionPaths = [
+  '/production',
+  '/production/commercial-video-production',
+  '/production/corporate-video-production',
+  '/production/event-video-production',
+  '/production/live-event-production',
+  '/production/studio-video-production',
+]
+
 export async function generateBroadcastUrls(page: number = 1) {
-  const urls: string[] = [];
-
-  for (const broadcastType of broadcastTypes) {
-    const typeUrl = broadcastType.href ?? `/broadcasting`;
-    urls.push(typeUrl);
-    try {
-      const res = await broadcastsService.getAllUnitsPublic({
-        page,
-        limit: 100,
-        type: broadcastType.type,
-      });
-
-      const units = res.data || [];
-      for (const unit of units) {
-        urls.push(`/broadcasting/units/${unit.slug}`);
-      }
-    } catch {
-      continue;
-    }
-  }
-
-  const start = (page - 1) * maxLocsPerSitemap;
-  const end = start + maxLocsPerSitemap;
-
-  const currentUrls = urls.slice(start, end);
-
-  return { urls: currentUrls, count: urls.length };
+  const start = (page - 1) * maxLocsPerSitemap
+  const end = start + maxLocsPerSitemap
+  return { urls: broadcastPaths.slice(start, end), count: broadcastPaths.length }
 }
 
 export async function generateIntentUrls(page: number = 1) {

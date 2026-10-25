@@ -9,17 +9,17 @@ export function MetaInformationSection() {
 
   return (
     <>
-      <TextInput control={control} name="meta.title" label="Meta Title" placeholder="Enter meta title" />
+      <TextInput control={control} name="meta.title" label="Meta title" placeholder="The search result title" />
 
       <TextAreaInput
         control={control}
         name="meta.description"
-        label="Meta Description"
-        placeholder="Enter meta description"
-        className="min-h-[100px]"
+        label="Meta description"
+        placeholder="The search result description"
+        rows={3}
       />
 
-      <ArrayInput name="meta.keywords" label="Keywords" placeholder="Enter keyword" />
+      <ArrayInput name="meta.keywords" label="Keywords" placeholder="Add a keyword" />
     </>
   );
 }

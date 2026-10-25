@@ -1,48 +1,38 @@
-import type { LucideIcon } from 'lucide-react';
-import { Building2, TvMinimal, Presentation, Film, Video } from 'lucide-react';
-
 export interface MediaProductionNavItem {
   label: string;
   href: string;
   description?: string;
-  icon?: LucideIcon;
 }
 
 export const mediaProductionNavItems: MediaProductionNavItem[] = [
   {
-    label: 'Video Production Dubai',
-    href: '/services',
-    description: 'Full-service video production and filming services for Dubai and the Gulf.',
-    icon: Video,
+    label: 'Overview',
+    href: '/production',
+    description: 'Finished programmes. Broadcasting runs the technical operation.',
   },
   {
-    label: 'Commercial Video Production',
-    href: '/services/commercial-video-production',
-    description: 'TV commercials, digital ads, and branded content for agencies and brands.',
-    icon: TvMinimal,
+    label: 'Commercial',
+    href: '/production/commercial-video-production',
+    description: 'Commercials, digital spots, and branded films.',
   },
   {
-    label: 'Corporate Video Production',
-    href: '/services/corporate-video-production',
-    description: 'Brand films, company profiles, and corporate documentaries.',
-    icon: Building2,
+    label: 'Corporate',
+    href: '/production/corporate-video-production',
+    description: 'Company films, profiles, and internal communications.',
   },
   {
-    label: 'Event Video Production',
-    href: '/services/event-video-production',
-    description: 'Conference coverage, product launches, and corporate event filming.',
-    icon: Presentation,
+    label: 'Event coverage',
+    href: '/production/event-video-production',
+    description: 'The film after the event, not the live switch.',
   },
   {
-    label: 'Live Event Production',
-    href: '/services/live-event-production',
-    description: 'Live streaming, conference production, and hybrid events.',
-    icon: Presentation,
+    label: 'Live production',
+    href: '/production/live-event-production',
+    description: 'MAP owns the live programme. Operations sit in Broadcasting.',
   },
   {
-    label: 'Studio Video Production',
-    href: '/services/studio-video-production',
-    description: 'Studio filming, green screen, and controlled environment production.',
-    icon: Film,
+    label: 'Studio',
+    href: '/production/studio-video-production',
+    description: 'Controlled studio and green-screen sessions.',
   },
 ];

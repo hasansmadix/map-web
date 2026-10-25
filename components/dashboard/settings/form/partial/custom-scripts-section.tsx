@@ -1,11 +1,10 @@
 'use client';
 
 import { useFormContext } from 'react-hook-form';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { fieldLabelClassName } from '@/components/shared/input/field-styles';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
-import { Label } from '@/components/ui/label';
-import { Code, Check, X } from 'lucide-react';
+import { Check, X } from 'lucide-react';
 import { useState } from 'react';
 
 export function CustomScriptsSection() {
@@ -17,7 +16,7 @@ export function CustomScriptsSection() {
 
   const addHeaderScript = () => {
     if (newHeaderScript.trim()) {
-      setValue('customScripts.header', [...headerScripts, newHeaderScript.trim()]);
+      setValue('customScripts.header', [...headerScripts, newHeaderScript.trim()], { shouldDirty: true });
       setNewHeaderScript('');
     }
   };
@@ -25,13 +24,14 @@ export function CustomScriptsSection() {
   const removeHeaderScript = (index: number) => {
     setValue(
       'customScripts.header',
-      headerScripts.filter((_: any, i: number) => i !== index),
+      headerScripts.filter((_: string, i: number) => i !== index),
+      { shouldDirty: true },
     );
   };
 
   const addFooterScript = () => {
     if (newFooterScript.trim()) {
-      setValue('customScripts.footer', [...footerScripts, newFooterScript.trim()]);
+      setValue('customScripts.footer', [...footerScripts, newFooterScript.trim()], { shouldDirty: true });
       setNewFooterScript('');
     }
   };
@@ -39,22 +39,15 @@ export function CustomScriptsSection() {
   const removeFooterScript = (index: number) => {
     setValue(
       'customScripts.footer',
-      footerScripts.filter((_: any, i: number) => i !== index),
+      footerScripts.filter((_: string, i: number) => i !== index),
+      { shouldDirty: true },
     );
   };
 
   return (
-    <Card>
-      <CardHeader>
-        <CardTitle className="flex items-center gap-2">
-          <Code className="h-5 w-5" />
-          Custom Scripts
-        </CardTitle>
-      </CardHeader>
-      <CardContent className="space-y-6">
-        <div className="space-y-4">
-          <div>
-            <Label htmlFor="headerScripts">Header Scripts</Label>
+    <div className="space-y-6">
+          <div className="space-y-2">
+            <p className={fieldLabelClassName}>Header</p>
             <div className="mt-2 flex gap-2">
               <Textarea
                 value={newHeaderScript}
@@ -78,8 +71,8 @@ export function CustomScriptsSection() {
               ))}
             </div>
           </div>
-          <div>
-            <Label htmlFor="footerScripts">Footer Scripts</Label>
+          <div className="space-y-2">
+            <p className={fieldLabelClassName}>Footer</p>
             <div className="mt-2 flex gap-2">
               <Textarea
                 value={newFooterScript}
@@ -103,8 +96,6 @@ export function CustomScriptsSection() {
               ))}
             </div>
           </div>
-        </div>
-      </CardContent>
-    </Card>
+    </div>
   );
 }

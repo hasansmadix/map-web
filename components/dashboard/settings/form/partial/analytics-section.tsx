@@ -1,12 +1,11 @@
 'use client';
 
 import { useFormContext } from 'react-hook-form';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { fieldLabelClassName } from '@/components/shared/input/field-styles';
 import { TextInput } from '@/components/shared/input/TextInput';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import { BarChart3, Check, X } from 'lucide-react';
+import { Check, X } from 'lucide-react';
 import { useState } from 'react';
 
 export function AnalyticsSection() {
@@ -16,7 +15,7 @@ export function AnalyticsSection() {
 
   const addAnalyticsScript = () => {
     if (newAnalyticsScript.trim()) {
-      setValue('analytics.customScripts', [...customScripts, newAnalyticsScript.trim()]);
+      setValue('analytics.customScripts', [...customScripts, newAnalyticsScript.trim()], { shouldDirty: true });
       setNewAnalyticsScript('');
     }
   };
@@ -24,35 +23,29 @@ export function AnalyticsSection() {
   const removeAnalyticsScript = (index: number) => {
     setValue(
       'analytics.customScripts',
-      customScripts.filter((_: any, i: number) => i !== index),
+      customScripts.filter((_: string, i: number) => i !== index),
+      { shouldDirty: true },
     );
   };
 
   return (
-    <Card>
-      <CardHeader>
-        <CardTitle className="flex items-center gap-2">
-          <BarChart3 className="h-5 w-5" />
-          Analytics
-        </CardTitle>
-      </CardHeader>
-      <CardContent className="space-y-6">
-        <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
+    <div className="space-y-4">
+        <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
           <TextInput
             control={control}
             name="analytics.googleAnalytics"
             label="Google Analytics"
-            placeholder="GA-XXXXXXXXX"
+            placeholder="G-XXXXXXXX"
           />
           <TextInput
             control={control}
             name="analytics.facebookPixel"
             label="Facebook Pixel"
-            placeholder="FB-XXXXXXXXX"
+            placeholder="Pixel ID"
           />
         </div>
         <div className="space-y-2">
-          <Label htmlFor="analyticsScripts">Analytics Custom Scripts</Label>
+          <p className={fieldLabelClassName}>Extra scripts</p>
           <div className="flex gap-2">
             <Input
               value={newAnalyticsScript}
@@ -74,7 +67,6 @@ export function AnalyticsSection() {
             ))}
           </div>
         </div>
-      </CardContent>
-    </Card>
+    </div>
   );
 }

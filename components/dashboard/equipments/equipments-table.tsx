@@ -185,15 +185,15 @@ export function EquipmentsTable() {
 
   return (
     <>
-      <Card>
         {/* ========================== Page Header ========================== */}
         <TableHeader
-          title="Equipments Management"
+          title="Equipment"
           total={total}
           currentPage={currentPage}
           totalPages={totalPages}
           isLoading={isPending}
           searchTerm={searchTerm}
+          onClearSearch={() => setSearch('')}
           filters={filterInfo}
           onClearAllFilters={() => {
             clearAll();
@@ -202,12 +202,11 @@ export function EquipmentsTable() {
           }}
           onAdd={handleAddEquipment}
           addButtonText="Add Equipment"
-          entityName="Equipment"
-          entityNamePlural="Equipments"
+          entityName="item"
+          entityNamePlural="items"
         />
 
         {/* ========================== Table ========================== */}
-        <CardContent>
           <DataTable
             tableId="equipments-table"
             columns={columns}
@@ -215,7 +214,6 @@ export function EquipmentsTable() {
             isLoading={isPending}
             error={error}
             refetch={refetch}
-            emptyMessage="No data found"
             pageIndex={currentPage}
             pageSize={pageSize}
             totalRows={total}
@@ -230,9 +228,11 @@ export function EquipmentsTable() {
             initialGlobalFilter={searchTerm}
             manualFiltering={true}
             messages={{
-              searchPlaceholder: 'Search...',
-              noData: 'No data found',
+              searchPlaceholder: 'Search equipment',
+              noData: 'No equipment yet',
             }}
+            emptyMessage="No equipment matches this list."
+            onRowClick={equipment => router.push(`/dashboard/equipments/${equipment.id}?view=1`)}
             toolbarRight={
               <div className="flex flex-wrap items-center gap-2">
                 <SelectFilter
@@ -331,8 +331,6 @@ export function EquipmentsTable() {
               </div>
             }
           />
-        </CardContent>
-      </Card>
 
       {/* ========================== Delete Modal ========================== */}
       {equipmentToDelete && (

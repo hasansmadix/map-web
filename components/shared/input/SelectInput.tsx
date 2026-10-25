@@ -3,6 +3,8 @@
 import type { Control, FieldPath, FieldValues } from 'react-hook-form';
 import { FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { cn } from '@/lib/utils';
+import { fieldControlTriggerClassName, fieldLabelClassName } from '@/components/shared/input/field-styles';
 
 interface SelectOption {
   value: string;
@@ -35,7 +37,7 @@ export function SelectInput<T extends FieldValues>({
       name={name}
       render={({ field }) => (
         <FormItem>
-          <FormLabel>{label}</FormLabel>
+          <FormLabel className={fieldLabelClassName}>{label}</FormLabel>
           <Select
             onValueChange={field.onChange}
             value={field.value}
@@ -43,7 +45,7 @@ export function SelectInput<T extends FieldValues>({
             key={field.value || 'empty'}
           >
             <FormControl>
-              <SelectTrigger className={className}>
+              <SelectTrigger className={cn(fieldControlTriggerClassName, className)}>
                 <SelectValue placeholder={placeholder} />
               </SelectTrigger>
             </FormControl>

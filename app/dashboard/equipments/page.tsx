@@ -1,17 +1,15 @@
 import { EquipmentsTable } from '@/components/dashboard/equipments/equipments-table';
+import { PageHeader } from '@/components/dashboard/page-header';
 import { type Metadata } from 'next';
 
 export const metadata: Metadata = {
-  title: 'Equipments Management',
+  title: 'Equipment',
 };
 
 export default async function EquipmentsPage() {
   return (
-    <div className="space-y-6 p-4">
-      <header>
-        <h1 className="text-3xl font-bold tracking-tight">Equipments Management</h1>
-        <p className="text-muted-foreground">Manage your equipments and their specifications.</p>
-      </header>
+    <div className="map-page">
+      <PageHeader title="Equipment" description="The hire catalogue. Open a row to read the record, or add a new item." />
 
       <EquipmentsTable />
     </div>

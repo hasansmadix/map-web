@@ -12,11 +12,11 @@ export const metadata: Metadata = {
 
 export default async function PublicPagesLayout({ children }: { children: React.ReactNode }) {
   return (
-    <>
+    <div className="marketing">
       {/* <TopBar /> */}
       <Header />
       <main className="bg-background min-h-screen">{children}</main>
       <Footer />
-    </>
+    </div>
   );
 }

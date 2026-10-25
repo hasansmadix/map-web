@@ -3,7 +3,6 @@
 import { useState, useMemo } from 'react';
 
 import { toast } from 'sonner';
-import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 
 import { DataTable } from '@/components/shared/table/data-table';
@@ -89,12 +88,12 @@ function EquipmentBrandsTable() {
     try {
       await deleteBrand.mutateAsync(selectedBrand.id);
 
-      toast.success('Equipment brand deleted successfully');
+      toast.success('Brand deleted');
 
       setSelectedBrand(null);
       setActiveDialog(null);
     } catch (error) {
-      const errMsg = (error as Error).message || 'Failed to delete equipment brand';
+      const errMsg = (error as Error).message || 'Could not delete the brand';
 
       toast.error(errMsg);
       console.error('Error deleting equipment brand:', error);
@@ -127,25 +126,24 @@ function EquipmentBrandsTable() {
 
   return (
     <>
-      <Card>
         {/* ========================== Page Header ========================== */}
         <TableHeader
-          title={'Equipment Brands'}
+          title="Brands"
           total={total}
           currentPage={currentPage}
           totalPages={totalPages}
           isLoading={isPending}
           searchTerm={searchTerm}
+          onClearSearch={() => setSearch('')}
           filters={filterInfo}
           onClearAllFilters={clearAll}
           onAdd={handleAddBrand}
-          addButtonText={`Add Brand`}
-          entityName={'Brand'}
-          entityNamePlural={'Brands'}
+          addButtonText="Add brand"
+          entityName="brand"
+          entityNamePlural="brands"
         />
 
         {/* ========================== Table ========================== */}
-        <CardContent>
           <DataTable
             tableId="equipment-brands-table"
             columns={columns}
@@ -153,7 +151,7 @@ function EquipmentBrandsTable() {
             isLoading={isPending}
             error={error}
             refetch={refetch}
-            emptyMessage={'No data found'}
+            emptyMessage="No brands match this list."
             pageIndex={currentPage}
             pageSize={pageSize}
             totalRows={total}
@@ -168,21 +166,16 @@ function EquipmentBrandsTable() {
             initialGlobalFilter={searchTerm}
             manualFiltering={true}
             messages={{
-              searchPlaceholder: 'Search...',
-              noData: 'No data found',
+              searchPlaceholder: 'Search brands',
+              noData: 'No brands yet',
             }}
+            onRowClick={handleEdit}
             toolbarRight={
               <div className="flex flex-wrap items-center gap-2">
                 <SelectFilter
-                  value={
-                    isActiveFilter === undefined
-                      ? 'all'
-                      : (isActiveFilter as unknown as string) === 'true'
-                        ? 'true'
-                        : 'false'
-                  }
+                  value={isActiveFilter === undefined ? 'all' : isActiveFilter ? 'true' : 'false'}
                   onValueChange={val =>
-                    setFilter('isActive', val === undefined ? undefined : val === 'true' ? true : false)
+                    setFilter('isActive', val === undefined ? undefined : val === 'true')
                   }
                   options={[
                     { value: 'true', label: 'Active' },
@@ -200,8 +193,6 @@ function EquipmentBrandsTable() {
               </div>
             }
           />
-        </CardContent>
-      </Card>
 
       {/* ========================== Add Modal ========================== */}
       {activeDialog === 'add' && (
@@ -223,8 +214,8 @@ function EquipmentBrandsTable() {
           open={activeDialog === 'delete'}
           onOpenChange={open => !open && setActiveDialog(null)}
           onConfirm={handleDeleteBrand}
-          title="Confirm Delete"
-          description="Are you sure you want to delete this equipment brand? This action cannot be undone and will permanently remove the equipment brand from the system."
+          title="Delete brand"
+          description={`Delete ${selectedBrand?.name || 'this brand'}? Items that use it will need another maker.`}
           loadingText="Deleting..."
           isLoading={deleteBrand.isPending}
           variant="destructive"

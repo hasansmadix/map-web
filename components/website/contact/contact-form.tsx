@@ -85,7 +85,7 @@ function ContactForm() {
             loadingText="Sending..."
             defaultText="Send Message"
             icon={Send}
-            className="w-full rounded-full"
+            className="h-12 w-full text-xs font-medium tracking-[0.18em] uppercase"
           />
         </form>
       </Form>

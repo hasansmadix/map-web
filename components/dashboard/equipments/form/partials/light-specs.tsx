@@ -8,8 +8,9 @@ import { CheckboxInput } from '@/components/shared/input/CheckboxInput';
 
 import { LightMountType } from '@/types/equipments/equipment.enum';
 import type { TCreateEquipmentForm } from '@/validations/equipments/create-equipment.schema';
+import { equipmentOptions } from '../equipment-option-label';
 
-const mountOptions = Object.values(LightMountType).map(type => ({ value: type, label: type }));
+const mountOptions = equipmentOptions(Object.values(LightMountType));
 
 function LightSpecs() {
   const form = useFormContext<TCreateEquipmentForm>();

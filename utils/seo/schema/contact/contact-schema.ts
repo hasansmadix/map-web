@@ -34,7 +34,7 @@ export async function generateContactPageSchema(): Promise<{
       url: currentURL,
       name: `Contact Us | ${siteName}`,
       description:
-        'Get in touch with MAP Production. Contact us for media production solutions, studio rentals, and professional services in Dubai Studio City.',
+        'Get in touch with MAP Production. Contact us for media production solutions, studio rentals, and professional services in Dubai Production City.',
       mainEntity: { '@id': organizationId },
     },
     currentURL,

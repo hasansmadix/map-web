@@ -1,4 +1,5 @@
 import { ArticlesTable } from '@/components/dashboard/articles/articles-table';
+import { PageHeader } from '@/components/dashboard/page-header';
 import { type Metadata } from 'next';
 
 export const metadata: Metadata = {
@@ -7,11 +8,8 @@ export const metadata: Metadata = {
 
 export default async function ArticlesPage() {
   return (
-    <div className="space-y-6 p-4">
-      <header>
-        <h1 className="text-3xl font-bold tracking-tight">Articles Management</h1>
-        <p className="text-muted-foreground">Manage your articles and their translations.</p>
-      </header>
+    <div className="map-page">
+      <PageHeader title="Articles" description="Stories published on the blog." />
 
       <ArticlesTable />
     </div>

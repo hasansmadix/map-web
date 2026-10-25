@@ -8,9 +8,10 @@ import { CheckboxInput } from '@/components/shared/input/CheckboxInput';
 
 import { AudioCategory, MicrophonePattern } from '@/types/equipments/equipment.enum';
 import type { TCreateEquipmentForm } from '@/validations/equipments/create-equipment.schema';
+import { equipmentOptions } from '../equipment-option-label';
 
-const categoryOptions = Object.values(AudioCategory).map(type => ({ value: type, label: type }));
-const patternOptions = Object.values(MicrophonePattern).map(type => ({ value: type, label: type }));
+const categoryOptions = equipmentOptions(Object.values(AudioCategory));
+const patternOptions = equipmentOptions(Object.values(MicrophonePattern));
 
 function AudioSpecs() {
   const form = useFormContext<TCreateEquipmentForm>();

@@ -8,64 +8,71 @@ import {
   NavigationMenuTrigger,
   NavigationMenuLink,
 } from '@/components/ui/navigation-menu';
-import { BroadcastType } from '@/types/broadcasts/broadcast.enums';
-import { renderIcon } from '@/utils/icon-resolver';
+import { cn } from '@/lib/utils';
+import {
+  headerMenuDescriptionClass,
+  headerMenuItemClass,
+  headerMenuTitleClass,
+  headerNavTriggerClass,
+} from './nav-styles';
 
-const broadcastTypes = [
-  {
-    type: 'overview',
-    label: 'Overview',
-    description: 'Browse all broadcast solutions and production services',
-    icon: 'TvMinimal',
-    href: '/broadcasting',
-  },
-  {
-    type: BroadcastType.OBVAN,
-    label: 'Outside Broadcast',
-    description: 'Outside Broadcast Vans for live events',
-    icon: 'Truck',
-    href: '/broadcasting/outside-broadcast',
-  },
-  {
-    type: BroadcastType.FLIGHT_CASE,
-    label: 'Portable Broadcast',
-    description: 'Portable broadcast equipment cases',
-    icon: 'PcCase',
-    href: '/broadcasting/portable-broadcast-systems',
-  },
-];
+const services = [
+  { label: 'Overview', description: 'Services, fleet, and where MAP works', href: '/broadcasting' },
+  { label: 'Outside broadcast', description: 'Mobile production engagements', href: '/broadcasting/outside-broadcast' },
+  { label: 'Live production', description: 'Multi-camera switching and delivery', href: '/broadcasting/live-production' },
+  { label: 'Sports', description: 'Matches, sessions, and tournaments', href: '/broadcasting/sports-broadcasting' },
+  { label: 'Transmission', description: 'Contribution and distribution', href: '/broadcasting/transmission' },
+  { label: 'Technical crew', description: 'Engineers and operators', href: '/broadcasting/technical-crew' },
+]
 
-export function BroadcastDropdown() {
+const systems = [
+  { label: 'OB vans', description: 'Published vehicles', href: '/broadcasting/ob-vans' },
+  { label: 'Flypacks', description: 'Portable flight-case systems', href: '/broadcasting/flypacks' },
+  { label: 'Studios', description: 'The Dubai studio facility', href: '/broadcasting/studios' },
+]
+
+export function BroadcastDropdown({ onDark = false }: { onDark?: boolean }) {
   return (
     <NavigationMenuItem>
-      <NavigationMenuTrigger className="hover:text-primary cursor-pointer bg-transparent py-1.5 text-sm whitespace-nowrap min-[1100px]:text-[15px]">
-        Broadcast
-      </NavigationMenuTrigger>
-      <NavigationMenuContent>
-        <ul className="max-h-[calc(100dvh-var(--spacing-navbar-height))] w-80 overflow-y-auto p-2">
-          {broadcastTypes.map(broadcast => (
-            <li key={broadcast.type}>
-              <NavigationMenuLink asChild>
-                <Link
-                  className="group hover:bg-primary/10 hover:text-foreground focus:bg-primary/10 focus:text-foreground dark:hover:bg-primary/20 dark:focus:bg-primary/20 flex flex-col rounded-md p-3 leading-none no-underline transition-colors outline-none select-none"
-                  href={broadcast.href}
-                >
-                  <div className="text-foreground mb-1 flex items-center gap-2 text-xs font-semibold">
-                    <span className="text-primary">
-                      {renderIcon(broadcast.icon, { size: 15, fallback: 'Video' })}
-                    </span>
-                    {broadcast.label}
-                  </div>
-                  {broadcast.description && (
-                    <p className="text-muted-foreground line-clamp-2 text-[12px] leading-snug">
-                      {broadcast.description}
-                    </p>
-                  )}
-                </Link>
-              </NavigationMenuLink>
-            </li>
-          ))}
-        </ul>
+      <NavigationMenuTrigger className={headerNavTriggerClass(onDark)}>Broadcast</NavigationMenuTrigger>
+      <NavigationMenuContent
+        className={cn(
+          'left-[calc(50%-18rem)]! w-[36rem]! rounded-none! shadow-none!',
+          onDark ? 'border-white/10 bg-foreground! text-white!' : 'bg-popover text-popover-foreground',
+        )}
+      >
+        <div className="grid w-[36rem] max-h-[calc(100dvh-var(--spacing-navbar-height))] grid-cols-2 overflow-y-auto p-3">
+          <div className="min-w-0">
+            <p className={cn('px-3 py-2 text-[11px] font-medium tracking-[0.16em] uppercase', onDark ? 'text-white/45' : 'text-muted-foreground')}>Services</p>
+            <ul>
+              {services.map(item => (
+                <li key={item.href}>
+                  <NavigationMenuLink asChild>
+                    <Link className={headerMenuItemClass(onDark)} href={item.href}>
+                      <div className={headerMenuTitleClass(onDark)}>{item.label}</div>
+                      <p className={headerMenuDescriptionClass(onDark)}>{item.description}</p>
+                    </Link>
+                  </NavigationMenuLink>
+                </li>
+              ))}
+            </ul>
+          </div>
+          <div className={cn('min-w-0', onDark ? 'border-l border-white/10' : 'border-border border-l')}>
+            <p className={cn('px-3 py-2 text-[11px] font-medium tracking-[0.16em] uppercase', onDark ? 'text-white/45' : 'text-muted-foreground')}>Systems</p>
+            <ul>
+              {systems.map(item => (
+                <li key={item.href}>
+                  <NavigationMenuLink asChild>
+                    <Link className={headerMenuItemClass(onDark)} href={item.href}>
+                      <div className={headerMenuTitleClass(onDark)}>{item.label}</div>
+                      <p className={headerMenuDescriptionClass(onDark)}>{item.description}</p>
+                    </Link>
+                  </NavigationMenuLink>
+                </li>
+              ))}
+            </ul>
+          </div>
+        </div>
       </NavigationMenuContent>
     </NavigationMenuItem>
   );

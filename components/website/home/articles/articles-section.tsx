@@ -1,45 +1,46 @@
-import Link from 'next/link';
-import { articlesService } from '@/services/articles.service';
-import { SimpleArticleCard } from './simple-article-card';
+import Link from 'next/link'
+import { ArrowRight } from 'lucide-react'
+
+import { BlogArticleCard } from '@/components/website/blog/blog-article-card'
+import { displayTitleClassName, eyebrowClassName, textLinkClassName } from '@/components/website/common/marketing-styles'
+import { cn } from '@/lib/utils'
+import { articlesService } from '@/services/articles.service'
 
 export async function ArticlesSection() {
-  let articlesResponse;
+  let articlesResponse
 
   try {
     articlesResponse = await articlesService.getAll({
-      limit: 6,
-    });
+      limit: 3,
+    })
   } catch {
-    articlesResponse = { data: [] };
+    articlesResponse = { data: [] }
   }
 
-  const articles = articlesResponse.data || [];
+  const articles = articlesResponse.data || []
 
-  if (articles.length === 0) {
-    return null;
-  }
+  if (articles.length === 0) return null
 
   return (
-    <div className="space-y-8">
-      <div>
-        <h2 className="text-xl font-semibold md:text-2xl tracking-tight">Latest Articles</h2>
-        <p className="text-muted-foreground mt-2 text-sm leading-relaxed md:text-base">
-          Expert insights, production tips, and industry updates from the MAP team.
-        </p>
-      </div>
-      <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-4">
-        {articles.slice(0, 4).map((article, i) => (
-          <SimpleArticleCard key={article.id} article={article} index={i} priority={i < 2} />
-        ))}
-      </div>
-      <div className="pt-4">
-        <Link
-          href="/blog"
-          className="text-primary hover:underline text-sm font-medium"
-        >
-          View all articles →
+    <div>
+      <div className="mb-10 flex flex-col gap-6 sm:flex-row sm:items-end sm:justify-between">
+        <div>
+          <p className={eyebrowClassName}>
+            <span className="bg-primary h-px w-8" aria-hidden />
+            Blog
+          </p>
+          <h2 className={cn(displayTitleClassName, 'text-3xl md:text-4xl')}>Notes from the studio</h2>
+        </div>
+        <Link href="/blog" className={textLinkClassName}>
+          Read the blog
+          <ArrowRight className="size-3.5 transition-transform group-hover:translate-x-1" />
         </Link>
       </div>
+      <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
+        {articles.map((article, index) => (
+          <BlogArticleCard key={article.id} article={article} priority={index < 2} />
+        ))}
+      </div>
     </div>
-  );
+  )
 }

@@ -1,13 +1,10 @@
 'use client';
 
 import { useFormContext } from 'react-hook-form';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { TextInput } from '@/components/shared/input/TextInput';
+import { fieldLabelClassName } from '@/components/shared/input/field-styles';
 import { Button } from '@/components/ui/button';
-import { Badge } from '@/components/ui/badge';
 import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import { Link, Plus, X } from 'lucide-react';
+import { Plus, X } from 'lucide-react';
 import { useState } from 'react';
 
 export function SocialLinksSection() {
@@ -17,7 +14,7 @@ export function SocialLinksSection() {
 
   const addSocialLink = () => {
     if (newSocialLink.platform && newSocialLink.url && newSocialLink.label) {
-      setValue('social', [...social, { ...newSocialLink }]);
+      setValue('social', [...social, { ...newSocialLink }], { shouldDirty: true });
       setNewSocialLink({ platform: '', url: '', label: '' });
     }
   };
@@ -25,67 +22,57 @@ export function SocialLinksSection() {
   const removeSocialLink = (index: number) => {
     setValue(
       'social',
-      social.filter((_: any, i: number) => i !== index),
+      social.filter((_: unknown, i: number) => i !== index),
+      { shouldDirty: true },
     );
   };
 
   return (
-    <Card>
-      <CardHeader>
-        <CardTitle className="flex items-center gap-2">
-          <Link className="h-5 w-5" />
-          Social Links
-        </CardTitle>
-      </CardHeader>
-      <CardContent className="space-y-4">
-        <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
-          <div className="space-y-2">
-            <Label htmlFor="platform">Platform</Label>
-            <Input
-              id="platform"
-              value={newSocialLink.platform}
-              onChange={e => setNewSocialLink(prev => ({ ...prev, platform: e.target.value }))}
-              placeholder="facebook"
-            />
-          </div>
-          <div className="space-y-2">
-            <Label htmlFor="url">URL</Label>
-            <Input
-              id="url"
-              value={newSocialLink.url}
-              onChange={e => setNewSocialLink(prev => ({ ...prev, url: e.target.value }))}
-              placeholder="https://facebook.com/yourpage"
-            />
-          </div>
-          <div className="space-y-2">
-            <Label htmlFor="label">Label</Label>
-            <Input
-              id="label"
-              value={newSocialLink.label}
-              onChange={e => setNewSocialLink(prev => ({ ...prev, label: e.target.value }))}
-              placeholder="Follow us on Facebook"
-            />
-          </div>
-        </div>
-        <Button type="button" onClick={addSocialLink} variant="outline" className="w-full">
-          <Plus className="mr-2 h-4 w-4" />
-          Add Social Link
-        </Button>
+    <div className="space-y-4">
+      <div className="grid grid-cols-1 gap-4 md:grid-cols-[1fr_1.4fr_1fr_auto] md:items-end">
         <div className="space-y-2">
-          {social.map((link: any, index: number) => (
-            <div key={index} className="flex items-center justify-between rounded-md border p-3">
-              <div className="flex items-center gap-3">
-                <Badge variant="secondary">{link.platform}</Badge>
-                <span className="text-sm">{link.label}</span>
-                <span className="text-muted-foreground text-xs">{link.url}</span>
-              </div>
-              <Button type="button" variant="ghost" size="sm" onClick={() => removeSocialLink(index)}>
-                <X className="h-4 w-4" />
-              </Button>
-            </div>
-          ))}
+          <p className={fieldLabelClassName}>Platform</p>
+          <Input
+            value={newSocialLink.platform}
+            onChange={e => setNewSocialLink(prev => ({ ...prev, platform: e.target.value }))}
+            placeholder="Instagram"
+          />
         </div>
-      </CardContent>
-    </Card>
+        <div className="space-y-2">
+          <p className={fieldLabelClassName}>URL</p>
+          <Input
+            value={newSocialLink.url}
+            onChange={e => setNewSocialLink(prev => ({ ...prev, url: e.target.value }))}
+            placeholder="https://instagram.com/map"
+          />
+        </div>
+        <div className="space-y-2">
+          <p className={fieldLabelClassName}>Label</p>
+          <Input
+            value={newSocialLink.label}
+            onChange={e => setNewSocialLink(prev => ({ ...prev, label: e.target.value }))}
+            placeholder="Instagram"
+          />
+        </div>
+        <Button type="button" onClick={addSocialLink} variant="outline">
+          <Plus className="size-4" />
+          Add
+        </Button>
+      </div>
+      {social.length === 0 ? <p className="text-muted-foreground text-sm font-light">No profiles yet.</p> : null}
+      <div className="space-y-2">
+        {social.map((link: { platform: string; label: string; url: string }, index: number) => (
+          <div key={`${link.platform}-${index}`} className="border-border flex items-center justify-between gap-3 border px-4 py-3">
+            <div className="min-w-0">
+              <p className="text-sm font-medium">{link.label || link.platform}</p>
+              <p className="text-muted-foreground truncate text-xs">{link.url}</p>
+            </div>
+            <Button type="button" variant="ghost" size="sm" onClick={() => removeSocialLink(index)} aria-label="Remove profile">
+              <X className="size-4" />
+            </Button>
+          </div>
+        ))}
+      </div>
+    </div>
   );
 }

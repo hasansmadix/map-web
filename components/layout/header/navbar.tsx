@@ -11,17 +11,20 @@ import {
 } from '@/components/ui/navigation-menu';
 
 import { navigationLinks } from './data';
+import { headerNavLinkClass } from './nav-styles';
 import { MediaProductionDropdown } from './media-production-dropdown';
 import { BroadcastDropdown } from './broadcast-dropdown';
+import { EquipmentRentalDropdown } from './equipment-rental-dropdown';
 import { useIsMobile } from '@/hooks/use-mobile';
 
-function Navbar() {
+function Navbar({ onDark = false }: { onDark?: boolean }) {
   const pathname = usePathname();
   const isMobile = useIsMobile();
+  const linkClass = (isActive: boolean) => headerNavLinkClass(onDark, isActive);
 
   return (
-    <NavigationMenu viewport={isMobile} className="max-lg:hidden">
-      <NavigationMenuList className="gap-2">
+    <NavigationMenu viewport={isMobile} className="flex-none max-lg:hidden">
+      <NavigationMenuList className="gap-6">
         {navigationLinks.map((link, index) => {
           const isActive = link.href === '' ? pathname === `/` : pathname === `${link.href}`;
 
@@ -36,8 +39,7 @@ function Navbar() {
               <NavigationMenuItem key={index}>
                 <NavigationMenuLink
                   active={isActive}
-                  className={` ${isActive ? 'text-primary bg-accent font-bold' : ''
-                    } hover:text-primary py-1.5 text-xs font-medium whitespace-nowrap min-[1100px]:text-sm`}
+                  className={linkClass(isActive)}
                   asChild
                 >
                   <Link href={`${link.href}`}>{link.label}</Link>
@@ -50,18 +52,9 @@ function Navbar() {
           if (index === 1) {
             return (
               <React.Fragment key={`dropdowns-${index}`}>
-                <MediaProductionDropdown />
-                <BroadcastDropdown />
-                <NavigationMenuItem key={index}>
-                  <NavigationMenuLink
-                    active={isActive}
-                    className={` ${isActive ? 'text-primary bg-accent font-bold' : ''
-                      } hover:text-primary py-1.5 text-xs font-medium whitespace-nowrap min-[1100px]:text-sm`}
-                    asChild
-                  >
-                    <Link href={`${link.href}`}>{link.label}</Link>
-                  </NavigationMenuLink>
-                </NavigationMenuItem>
+                <MediaProductionDropdown onDark={onDark} />
+                <BroadcastDropdown onDark={onDark} />
+                <EquipmentRentalDropdown onDark={onDark} />
               </React.Fragment>
             );
           }
@@ -70,8 +63,7 @@ function Navbar() {
             <NavigationMenuItem key={index}>
               <NavigationMenuLink
                 active={isActive}
-                className={` ${isActive ? 'text-primary bg-accent font-bold' : ''
-                  } hover:text-primary py-1.5 text-xs font-medium whitespace-nowrap min-[1100px]:text-sm`}
+                className={linkClass(isActive)}
                 asChild
               >
                 <Link href={`${link.href}`}>{link.label}</Link>

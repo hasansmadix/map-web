@@ -1,4 +1,5 @@
 import { BroadcastUnitsTable } from '@/components/dashboard/broadcast-units/broadcast-units-table';
+import { PageHeader } from '@/components/dashboard/page-header';
 
 import { type Metadata } from 'next';
 
@@ -8,11 +9,8 @@ export const metadata: Metadata = {
 
 export default async function BroadcastUnitsPage() {
   return (
-    <div className="space-y-6 p-4">
-      <header>
-        <h1 className="text-3xl font-bold tracking-tight">Broadcast Units Management</h1>
-        <p className="text-muted-foreground">Manage broadcast units and their configurations.</p>
-      </header>
+    <div className="map-page">
+      <PageHeader title="Broadcast units" description="The public website reads the repository, not this screen. Edits here do not change the live fleet pages." />
 
       <BroadcastUnitsTable />
     </div>

@@ -1,110 +1,124 @@
-import { Lightbulb, Star, Users, Shield, Heart, Zap, Eye, Target } from 'lucide-react';
-import type { PageFeatureItem } from '@/components/website/common/page-components';
+import { Heart, Lightbulb, Shield, Star, Users, Zap, type LucideIcon } from 'lucide-react'
 
 export const aboutStory = {
-  title: 'Empowering Stories Across the Middle East',
+  eyebrow: 'The organisation',
+  title: 'Production facilities and broadcast infrastructure in Dubai',
   paragraphs: [
-    'MAP Media Art Production is a creative force transforming ideas into powerful visual experiences across the UAE, Saudi Arabia, Oman, Qatar, and the wider Middle East. We combine innovative media production, strategic creativity, and technical excellence to deliver content that inspires, informs, and engages.',
-    'Founded with a vision to elevate media production in the region, we have grown into a team of creative professionals, strategists, and innovators committed to delivering solutions that make a difference. From corporate videos and live broadcasting to documentaries and event coverage, we help brands and organizations connect with their audiences effectively.',
+    'MAP Media Art Production produces film and broadcast programmes for companies, institutions, and live events. The organisation is based at B29, Dubai Production City.',
+    'Commercials, corporate films, studio sessions, and outside broadcasts are planned as one engagement. Crew, cameras, and post-production are provided by the same organisation.',
   ],
-};
+}
 
-export const coreValues: PageFeatureItem[] = [
+export const aboutFacts = [
+  { value: '25+', label: 'Years in production' },
+  { value: 'B29', label: 'Dubai Production City' },
+  { value: 'The Gulf', label: 'UAE, Saudi Arabia, Oman, Qatar' },
+]
+
+export const aboutPurpose = {
+  mission: {
+    eyebrow: 'Mission',
+    title: 'Deliver work to broadcast standard',
+    text: 'MAP plans the production, crews it from its own equipment, and delivers a master suitable for broadcast, a board, or an event screen.',
+  },
+  vision: {
+    eyebrow: 'Vision',
+    title: 'The production partner for studio and outside broadcast',
+    text: 'Organisations across the UAE, Saudi Arabia, Oman, and Qatar appoint MAP when an engagement requires a studio, an outside-broadcast unit, or a full crew.',
+  },
+}
+
+export interface AboutValue {
+  icon: LucideIcon
+  title: string
+  description: string
+}
+
+export const coreValues: AboutValue[] = [
   {
     icon: Lightbulb,
     title: 'Innovation',
-    description:
-      'We embrace new ideas, creative thinking, and advanced technologies to deliver unique and impactful media solutions.',
+    description: 'New formats and new kit, used when they make the picture better.',
   },
   {
     icon: Star,
     title: 'Excellence',
-    description:
-      'We are committed to the highest standards of quality in every project, ensuring precision, creativity, and outstanding results.',
+    description: 'The same standard on the shoot day and in the delivered master.',
   },
   {
     icon: Users,
     title: 'Collaboration',
-    description:
-      'We believe in teamwork and strong partnerships, working closely with our clients to bring visions to life successfully.',
+    description: 'The client is in the plan, from the first call through delivery.',
   },
   {
     icon: Shield,
     title: 'Integrity',
-    description:
-      'We operate with honesty, transparency, and professionalism, building trust through every interaction and project.',
+    description: 'The quote names the crew, the kit, and the dates.',
   },
   {
     icon: Heart,
-    title: 'Customer Focus',
-    description:
-      'Our clients are at the center of everything we do, and we strive to understand their needs and exceed expectations.',
+    title: 'Client focus',
+    description: 'The deliverable is the film the audience will actually watch.',
   },
   {
     icon: Zap,
-    title: 'Passion',
-    description:
-      'Our passion for media and storytelling drives us to create meaningful, engaging, and high-quality content.',
+    title: 'Delivery',
+    description: 'The crew stays with the job until the show is down and the files are in.',
   },
-];
+]
 
-export const aboutStats = [
-  { value: '25+', label: 'Years of Experience' },
-  { value: 'Dubai', label: 'Studio City HQ' },
-  { value: 'Gulf', label: 'Regional Coverage' },
-];
-
-export const missionContent = {
-  icon: Target,
-  title: 'Our Mission',
-  text: 'At MAP Media Art Production, we are a creative force shaping the future of media and storytelling in the UAE, Saudi Arabia, and the wider Middle East. With over 25 years of experience, we combine artistic vision, technical expertise, and innovation to bring powerful ideas to life through compelling visual content.',
-};
-
-export const visionContent = {
-  icon: Eye,
-  title: 'Our Vision',
-  text: 'Our vision is to be a leading media and storytelling company in the UAE, Saudi Arabia, and the wider Middle East, known for our creative excellence and innovation. We aim to inspire, inform, and engage audiences through impactful visual content that resonates with cultural identity and global perspectives.',
-};
+export const aboutProcess = {
+  eyebrow: 'Engagement',
+  title: 'From the first briefing to the master',
+  lead: 'One team is responsible for the brief, the production, and the delivery.',
+  steps: [
+    { step: '01', title: 'Brief', description: 'Dates, format, and where the piece needs to play.' },
+    { step: '02', title: 'Plan', description: 'A crew, a kit list, and a quote from the studios we run.' },
+    { step: '03', title: 'Produce', description: 'Stage, location, or an outside-broadcast truck.' },
+    { step: '04', title: 'Deliver', description: 'A master for broadcast, the web, or the event.' },
+  ],
+}
 
 export const faqItems = [
   {
     q: 'What services does MAP Media Art Production offer?',
-    a: 'We provide comprehensive media services including video production, live broadcasting, event coverage, studio filming, equipment rental, social media content, and more — all tailored to your project needs.',
+    a: 'Video production, live broadcasting, event coverage, studio filming, equipment rental, and social content. Each job is crewed to the brief.',
   },
   {
     q: 'Where is MAP Media Art Production based?',
-    a: 'Our headquarters are in Dubai Studio City, UAE, with facilities in Dubai Production City, making us centrally located to serve clients across the UAE, Saudi Arabia, Oman, Qatar, and the wider Middle East.',
+    a: 'MAP is based at B29, Dubai Production City. Work also runs across the UAE, Saudi Arabia, Oman, and Qatar.',
   },
   {
     q: 'How do I request a quote for my project?',
-    a: 'Contact us through our contact form, email, or phone to tell us about your project. We will provide a personalized quote based on your specific requirements.',
+    a: 'Send the brief through the contact form, by email, or by phone. The quote is based on the format, the dates, and the crew the job needs.',
   },
   {
     q: 'How long does it take to complete a video production project?',
-    a: 'Timelines vary based on project type and complexity. Simple productions can take a few weeks, while larger projects with extensive planning and post-production may take longer. We provide accurate timelines during the proposal stage.',
+    a: 'A short film can be a few weeks. A larger job, with planning and post, takes longer. The timeline is set in the proposal.',
   },
   {
     q: 'Can MAP produce content for social media platforms?',
-    a: 'Yes — we create optimized content for Instagram, TikTok, YouTube, Facebook, and LinkedIn to help you reach your audience effectively.',
+    a: 'Yes. Cuts are delivered for Instagram, TikTok, YouTube, Facebook, and LinkedIn, alongside the broadcast master when the job needs both.',
   },
   {
     q: 'Do you provide equipment rental and technical support?',
-    a: 'Yes — we offer professional equipment rental backed by technical support from our experienced team to ensure seamless production.',
+    a: 'Yes. Cameras, lighting, and broadcast kit can be rented with a technician from the same team.',
   },
   {
     q: 'Can you handle live event broadcasting?',
-    a: 'Absolutely. We deliver seamless live broadcasting services for events of all scales, using OB vans, portable systems, and multi-platform streaming.',
+    a: 'Yes. Live shows run from OB vans and portable broadcast systems, including multi-platform streaming.',
   },
   {
     q: 'What industries do you serve?',
-    a: 'We work with corporate, entertainment, cultural, education, retail, government, and more to create engaging visual content that meets specific industry goals.',
+    a: 'Corporate, entertainment, culture, education, retail, and government. The crew and the format change with the brief.',
   },
-];
+]
 
 export const aboutInternalLinks = [
-  { text: 'Video Production', href: '/services' },
+  { text: 'Video production', href: '/production' },
   { text: 'Broadcasting', href: '/broadcasting' },
-  { text: 'Commercial Video', href: '/services/commercial-video-production' },
-  { text: 'Corporate Video', href: '/services/corporate-video-production' },
-  { text: 'Contact Us', href: '/contact' },
-];
+  { text: 'Commercial video', href: '/production/commercial-video-production' },
+  { text: 'Corporate video', href: '/production/corporate-video-production' },
+  { text: 'Equipment rental', href: '/equipment-rental' },
+  { text: 'Contact', href: '/contact' },
+]

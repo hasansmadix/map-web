@@ -1,29 +1,21 @@
 import { notFound } from 'next/navigation';
 import type { Metadata } from 'next';
-import {
-  Camera,
-  Sparkles,
-  Mic,
-  Lightbulb,
-  Package,
-  Tag,
-  FolderOpen,
-  Info,
-} from 'lucide-react';
+import Link from 'next/link';
+import { cache } from 'react';
 
 import { equipmentsService } from '@/services/equipments/equipments.service';
-
 import { createEnhancedMetadata } from '@/utils/seo/meta/enhanced-meta';
-import { Badge } from '@/components/ui/badge';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Separator } from '@/components/ui/separator';
-import DivHtml from '@/components/shared/div-html';
 import { capitalizeEachWord } from '@/utils/format';
 import { EquipmentType } from '@/types/equipments/equipment.enum';
 import type { IEquipment } from '@/types/equipments/equipment.type';
 import { EquipmentGallery } from '@/components/website/equipments/view/equipment-gallery';
 import { EquipmentSpecs } from '@/components/website/equipments/view/equipment-specs';
+import { EquipmentEnquiry } from '@/components/website/equipments/equipment-enquiry';
 import { singleEquipmentSchema } from '@/utils/seo/schema/equipments/single-equipment-schema';
+import { CTASection } from '@/components/website/common/cta-section';
+import { displayTitleClassName } from '@/components/website/common/marketing-styles';
+import SafeHtmlContent from '@/components/shared/safe-html-content';
+import { cn } from '@/lib/utils';
 
 interface EquipmentPageProps {
   params: Promise<{
@@ -31,12 +23,13 @@ interface EquipmentPageProps {
   }>;
 }
 
+const loadEquipment = cache((slug: string) => equipmentsService.getBySlug(slug));
+
 export async function generateMetadata({ params }: EquipmentPageProps): Promise<Metadata> {
   const { slug } = await params;
-  let equipment: IEquipment | null = null;
 
   try {
-    equipment = await equipmentsService.getBySlug(slug);
+    const equipment = await loadEquipment(slug);
 
     const keywords = [
       equipment.name,
@@ -48,7 +41,7 @@ export async function generateMetadata({ params }: EquipmentPageProps): Promise<
       'media production',
     ].filter(Boolean) as string[];
 
-    const metadata = createEnhancedMetadata({
+    return createEnhancedMetadata({
       title: { absolute: `${equipment.name} for Rent in UAE` },
       description:
         equipment.summary || equipment.description || `${equipment.name} - Professional equipment rental`,
@@ -67,8 +60,6 @@ export async function generateMetadata({ params }: EquipmentPageProps): Promise<
             : equipment.coverPath,
       },
     });
-
-    return metadata;
   } catch {
     return {
       title: 'Equipment Not Found',
@@ -82,14 +73,12 @@ export default async function EquipmentPage({ params }: EquipmentPageProps) {
   let equipment: IEquipment | null = null;
 
   try {
-    equipment = await equipmentsService.getBySlug(slug);
+    equipment = await loadEquipment(slug);
   } catch {
-    // Equipment not found
+    equipment = null;
   }
 
-  if (!equipment) {
-    notFound();
-  }
+  if (!equipment) notFound();
 
   const images =
     equipment.gallery && equipment.gallery.length > 0
@@ -98,29 +87,17 @@ export default async function EquipmentPage({ params }: EquipmentPageProps) {
         ? [equipment.coverPath]
         : [];
 
-  const getEquipmentTypeIcon = (type: string) => {
-    switch (type.toLowerCase()) {
-      case 'camera':
-        return <Camera className="h-4 w-4" />;
-      case 'lens':
-        return <Sparkles className="h-4 w-4" />;
-      case 'light':
-        return <Lightbulb className="h-4 w-4" />;
-      case 'audio':
-        return <Mic className="h-4 w-4" />;
-      case 'accessory':
-        return <Package className="h-4 w-4" />;
-      default:
-        return <Package className="h-4 w-4" />;
-    }
-  };
-
-  // Markup Schema
   const jsonLd = await singleEquipmentSchema(equipment);
+  const eyebrow = [equipment.brand?.name, equipment.category?.name, equipment.equipmentType ? capitalizeEachWord(equipment.equipmentType) : null]
+    .filter(Boolean) as string[];
+  const facts = [
+    equipment.brand?.name ? { label: 'Brand', value: equipment.brand.name } : null,
+    equipment.category?.name ? { label: 'Category', value: equipment.category.name } : null,
+    equipment.equipmentType ? { label: 'Type', value: capitalizeEachWord(equipment.equipmentType) } : null,
+  ].filter((fact): fact is { label: string; value: string } => fact !== null);
 
   return (
-    <div className="bg-background relative min-h-screen">
-      {/* JSON-LD */}
+    <div className="bg-background min-h-screen">
       <script
         id="equipment-jsonld"
         type="application/ld+json"
@@ -129,131 +106,78 @@ export default async function EquipmentPage({ params }: EquipmentPageProps) {
         }}
       />
 
+      <section className="pt-[4.5rem]">
+        <div className="container pt-8 pb-2 md:pt-12">
+          <nav aria-label="breadcrumb">
+            <ol className="text-muted-foreground flex flex-nowrap items-center gap-2 overflow-hidden text-[13px]">
+              <li className="shrink-0">
+                <Link href="/" className="hover:text-foreground">
+                  Home
+                </Link>
+              </li>
+              <li className="shrink-0" aria-hidden>
+                /
+              </li>
+              <li className="shrink-0">
+                <Link href="/equipment-rental" className="hover:text-foreground">
+                  Equipment rental
+                </Link>
+              </li>
+              <li className="shrink-0" aria-hidden>
+                /
+              </li>
+              <li className="text-foreground min-w-0 truncate">{equipment.name}</li>
+            </ol>
+          </nav>
 
-      {/* Hero Section - Two Columns, No Background Image */}
-      <div className="pt-edge-nav-margin relative z-10">
-        <div className="container mx-auto max-w-7xl px-6 py-10">
-          <div className="grid grid-cols-1 gap-8 lg:grid-cols-[1.25fr_1fr] lg:gap-12">
-            {/* Left Column: Title, Summary, Description, Equipment Details */}
-            <div className="flex flex-col justify-center space-y-4">
-              {/* Badges */}
-              <div className="flex flex-wrap items-center gap-2">
-                {equipment.isFeatured && (
-                  <Badge variant="default" className="text-xs py-1 px-2 font-medium rounded-full">
-                    <Sparkles className="mr-1 h-3 w-3" />
-                    Featured
-                  </Badge>
-                )}
-                {equipment.category && (
-                  <Badge variant="secondary" className="text-xs py-1 px-2 rounded-full">
-                    {equipment.category.name}
-                  </Badge>
-                )}
-                {equipment.brand && (
-                  <Badge variant="outline" className="text-xs py-1 px-2 rounded-full">
-                    {equipment.brand.name}
-                  </Badge>
-                )}
-                {equipment.equipmentType && (
-                  <Badge variant="outline" className="text-xs py-1 px-2 rounded-full">
-                    {getEquipmentTypeIcon(equipment.equipmentType)}
-                    <span className="ml-1">{capitalizeEachWord(equipment.equipmentType)}</span>
-                  </Badge>
-                )}
-              </div>
+          <header className="mt-6 max-w-3xl">
+            {eyebrow.length > 0 ? (
+              <p className="text-muted-foreground mb-4 flex flex-wrap items-center gap-x-3 text-[11px] font-medium tracking-[0.16em] uppercase">
+                {eyebrow.map((item, index) => (
+                  <span key={`${item}-${index}`} className="flex items-center gap-3">
+                    {index > 0 ? <span aria-hidden>/</span> : null}
+                    {item}
+                  </span>
+                ))}
+              </p>
+            ) : null}
+            <h1 className={cn(displayTitleClassName, 'text-3xl md:text-5xl')}>{equipment.name}</h1>
+            <div className="bg-primary mt-5 h-px w-12" aria-hidden />
+            {equipment.summary ? (
+              <p className="text-muted-foreground mt-5 max-w-2xl text-base leading-relaxed font-light md:text-lg">
+                {equipment.summary}
+              </p>
+            ) : null}
+          </header>
+        </div>
+      </section>
 
-              {/* Title */}
-              <h1 className="text-2xl font-bold tracking-tight md:text-3xl lg:text-4xl">{equipment.name}</h1>
-
-              {/* Summary */}
-              {equipment.summary && (
-                <p className="text-muted-foreground text-md leading-relaxed md:text-lg">{equipment.summary}</p>
-              )}
-
-              {/* Description */}
-              {equipment.description && (
-                <div className="text-muted-foreground leading-relaxed text-sm">
-                  <DivHtml html={equipment.description} />
-                </div>
-              )}
-
-              {/* Equipment Details - Compact */}
-              <div className="rounded-lg border bg-muted/30 p-4">
-                <p className="mb-3 text-xs font-semibold uppercase tracking-wider text-muted-foreground">
-                  Equipment Details
-                </p>
-                <div className="flex flex-wrap gap-x-6 gap-y-2 text-sm">
-                  {equipment.brand && (
-                    <div className="flex items-center gap-2">
-                      <Tag className="text-muted-foreground h-3.5 w-3.5 shrink-0" />
-                      <span>
-                        <span className="text-muted-foreground">Brand:</span>{' '}
-                        <span className="font-medium">{equipment.brand.name}</span>
-                      </span>
-                    </div>
-                  )}
-                  {equipment.category && (
-                    <div className="flex items-center gap-2">
-                      <FolderOpen className="text-muted-foreground h-3.5 w-3.5 shrink-0" />
-                      <span>
-                        <span className="text-muted-foreground">Category:</span>{' '}
-                        <span className="font-medium">{equipment.category.name}</span>
-                      </span>
-                    </div>
-                  )}
-                  {equipment.equipmentType && (
-                    <div className="flex items-center gap-2">
-                      <div className="text-muted-foreground">{getEquipmentTypeIcon(equipment.equipmentType)}</div>
-                      <span>
-                        <span className="text-muted-foreground">Type:</span>{' '}
-                        <span className="font-medium">{capitalizeEachWord(equipment.equipmentType)}</span>
-                      </span>
-                    </div>
-                  )}
-                </div>
-              </div>
+      <section className="container grid grid-cols-1 items-start gap-12 py-10 md:py-14 lg:grid-cols-[minmax(0,1fr)_22rem] lg:gap-16">
+        <div className="min-w-0 space-y-14 md:space-y-16">
+          {images.length > 0 ? <EquipmentGallery images={images} equipmentName={equipment.name} /> : null}
+          {equipment.description ? (
+            <div>
+              <h2 className={cn(displayTitleClassName, 'mb-6 text-2xl md:text-3xl')}>About this item</h2>
+              <SafeHtmlContent
+                content={equipment.description}
+                className="prose-headings:font-medium prose-p:font-light"
+                size="sm"
+              />
             </div>
-
-            {/* Right Column: Images */}
-            <div className="flex w-full items-stretch">
-              {images.length > 0 ? (
-                <EquipmentGallery
-                  images={images}
-                  equipmentName={equipment.name}
-                  aspectRatio="4/3"
-                  className="min-h-[280px] w-full sm:min-h-[320px] lg:min-h-[400px]"
-                />
-              ) : (
-                <div className="bg-muted flex aspect-video w-full items-center justify-center rounded-lg">
-                  <Package className="text-muted-foreground h-16 w-16" />
-                </div>
-              )}
-            </div>
+          ) : null}
+          <div>
+            <h2 className={cn(displayTitleClassName, 'mb-6 text-2xl md:text-3xl')}>Specifications</h2>
+            <EquipmentSpecs specs={equipment.specs} equipmentType={equipment.equipmentType as EquipmentType} />
           </div>
         </div>
-      </div>
+        <EquipmentEnquiry name={equipment.name} facts={facts} />
+      </section>
 
-      {/* Specifications Section - Below Hero */}
-      <div className="relative z-10 border-t">
-        <div className="container mx-auto max-w-7xl px-6 py-10">
-          <Card className="glass-card">
-            <CardHeader>
-              <div className="flex items-center gap-3">
-                <div className="bg-primary/10 flex h-10 w-10 items-center justify-center rounded-lg">
-                  <Info className="text-primary h-5 w-5" />
-                </div>
-                <CardTitle className="text-xl">Specifications</CardTitle>
-              </div>
-            </CardHeader>
-            <CardContent>
-              <EquipmentSpecs
-                specs={equipment.specs}
-                equipmentType={equipment.equipmentType as EquipmentType}
-              />
-            </CardContent>
-          </Card>
-        </div>
-      </div>
+      <CTASection
+        title="Request a proposal"
+        description="Share the dates and the kit list. MAP will confirm availability from the stores in Dubai and send a written quote."
+        buttons={[{ text: 'Contact', href: '/contact' }]}
+      />
     </div>
   );
 }

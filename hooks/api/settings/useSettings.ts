@@ -15,7 +15,7 @@ interface UseSettingsReturn {
   isError: boolean;
   error: string | null;
 
-  updateSettings: (payload: TUpdateSettingsForm) => Promise<Settings>;
+  updateSettings: (payload: Partial<TUpdateSettingsForm>) => Promise<Settings>;
   isUpdating: boolean;
   updateError: string | null;
 
@@ -33,7 +33,7 @@ export function useSettings({ enabled = true }: UseSettingsOptions = {}): UseSet
   });
 
   const updateMutation = useMutation({
-    mutationFn: ({ payload }: { payload: TUpdateSettingsForm }) => settingsService.updateSettings(payload),
+    mutationFn: ({ payload }: { payload: Partial<TUpdateSettingsForm> }) => settingsService.updateSettings(payload),
     onSuccess: updated => {
       queryClient.setQueryData(['settings'], (old: any) => ({
         ...old,

@@ -8,11 +8,12 @@ import { CheckboxGroupInput } from '@/components/shared/input/CheckboxGroupInput
 
 import { SensorType, ResolutionType, MountType, MediaFormat } from '@/types/equipments/equipment.enum';
 import type { TCreateEquipmentForm } from '@/validations/equipments/create-equipment.schema';
+import { equipmentOptions } from '../equipment-option-label';
 
-const sensorOptions = Object.values(SensorType).map(type => ({ value: type, label: type }));
-const resolutionOptions = Object.values(ResolutionType).map(type => ({ value: type, label: type }));
-const mountOptions = Object.values(MountType).map(type => ({ value: type, label: type }));
-const mediaOptions = Object.values(MediaFormat).map(type => ({ value: type, label: type }));
+const sensorOptions = equipmentOptions(Object.values(SensorType));
+const resolutionOptions = equipmentOptions(Object.values(ResolutionType));
+const mountOptions = equipmentOptions(Object.values(MountType));
+const mediaOptions = equipmentOptions(Object.values(MediaFormat));
 
 function CameraSpecs() {
   const form = useFormContext<TCreateEquipmentForm>();

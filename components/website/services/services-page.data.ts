@@ -1,205 +1,207 @@
-import {
-  Camera,
-  Film,
-  TvMinimal,
-  Monitor,
-  Video,
-  Shield,
-  Zap,
-  Users,
-  Building2,
-  Briefcase,
-  GraduationCap,
-  Heart,
-  Landmark,
-  Presentation,
-} from 'lucide-react';
+import type { FaqItem } from '@/components/website/common/page-faq'
 
-export const whatWeOffer = [
+export const servicesHero = {
+  eyebrow: 'Production',
+  title: 'Production services',
+  lead: 'Production delivers the programme: a film, a session, or a live engagement MAP is accountable for. Broadcasting operates the systems and the technical crew.',
+  primary: { text: 'Request a proposal', href: '/contact?subject=rfq' },
+  secondary: { text: 'Contact', href: '/contact' },
+}
+
+export const servicesFacts = [
+  { value: '25+', label: 'Years in production' },
+  { value: 'B29', label: 'Dubai Production City' },
+  { value: 'The Gulf', label: 'UAE, Saudi Arabia, Oman, Qatar' },
+]
+
+export const serviceLines: ServiceLine[] = [
   {
-    icon: Building2,
-    title: 'Corporate Video Production',
+    id: 'commercial',
+    nav: 'Commercial',
+    title: 'Commercial production',
     description:
-      'Brand films, company profiles, internal communications, and corporate documentaries for businesses across Dubai and the Gulf.',
+      'Television spots, digital advertising, and branded films for agencies and brand owners. The shoot is planned against the media schedule, and every length and ratio is delivered from the same production.',
+    href: '/production/commercial-video-production',
+    link: 'Commercial production',
+    scope: [
+      'Broadcast and television spots',
+      'Digital advertising for paid and owned channels',
+      'Branded films and short documentaries',
+      'Launch and announcement films',
+      'Cutdowns, ratios, and captions for each platform',
+    ],
   },
   {
-    icon: TvMinimal,
-    title: 'Commercial & Advertising',
+    id: 'corporate',
+    nav: 'Corporate',
+    title: 'Corporate film',
     description:
-      'TV commercials, digital ads, product videos, and branded content for agencies and brands in the UAE and region.',
+      'Company profiles, leadership communications, and sales films for organisations that publish to a board, a workforce, or a client. The film is written for that audience and finished for public use.',
+    href: '/production/corporate-video-production',
+    link: 'Corporate film',
+    scope: [
+      'Company and institutional profiles',
+      'Leadership and internal communications',
+      'Sales, case, and product films',
+      'Recruitment films',
+      'Versions for intranet, web, and presentation',
+    ],
   },
   {
-    icon: Presentation,
-    title: 'Event Filming',
+    id: 'events',
+    nav: 'Events',
+    title: 'Event coverage',
     description:
-      'Conference coverage, product launches, corporate events, and live streaming for exhibitions and hybrid productions.',
+      'Conferences, launches, exhibitions, and ceremonies, covered so the organisation retains a structured record after the event. Stage, speakers, and the room are planned from the run of show.',
+    href: '/production/event-video-production',
+    link: 'Event coverage',
+    scope: [
+      'Conference and summit coverage',
+      'Launches, galas, and ceremonies',
+      'Exhibitions and trade shows',
+      'Awards programmes',
+      'Highlight films, session films, and social cuts',
+    ],
   },
   {
-    icon: Film,
-    title: 'Documentary & Long-Form',
+    id: 'live',
+    nav: 'Live',
+    title: 'Live production',
     description:
-      'Documentary production, case studies, and narrative content for broadcast, digital, and institutional clients.',
+      'MAP owns the live programme for the room and the remote audience. The technical operation, the vehicles, and the crew are specified under Broadcasting.',
+    href: '/production/live-event-production',
+    link: 'Live production',
+    scope: [
+      'One team accountable from the brief to the programme',
+      'The room and the remote audience on the same show',
+      'Graphics, names, and sponsor treatments',
+      'A recording of the programme as it went out',
+      'The system chosen with the broadcasting operation',
+    ],
   },
   {
-    icon: Monitor,
-    title: 'Post-Production',
+    id: 'studio',
+    nav: 'Studio',
+    title: 'Studio production',
     description:
-      'Editing, colour grading, motion graphics, and sound design in our Dubai post-production facilities.',
+      'Interviews, presenter sessions, product films, and green-screen work in a controlled room. Light, sound, and background are set before the session begins.',
+    href: '/production/studio-video-production',
+    link: 'Studio production',
+    scope: [
+      'Executive and expert interviews',
+      'Presenter and teleprompter sessions',
+      'Product and tabletop filming',
+      'Green screen and virtual backgrounds',
+      'Selects, grade, and keyed finishes',
+    ],
   },
-];
+]
 
-export const whyChooseMap = [
-  {
-    icon: Camera,
-    title: 'Broadcast-Grade Equipment',
-    description: '4K cameras, professional lighting, and studio facilities for broadcast-quality output.',
-  },
-  {
-    icon: Users,
-    title: 'Experienced Crews',
-    description: 'Creative directors, cinematographers, and production teams with regional expertise.',
-  },
-  {
-    icon: Zap,
-    title: 'End-to-End Production',
-    description: 'Full service from concept and scripting through filming to delivery and post-production.',
-  },
-  {
-    icon: Shield,
-    title: 'Regional Coverage',
-    description: 'Dubai, UAE, Saudi Arabia, Oman, and Qatar—we film wherever your project requires.',
-  },
-  {
-    icon: Video,
-    title: 'Flexible Formats',
-    description: '4K, multi-camera setups, live streaming integration, and broadcast-standard deliverables.',
-  },
-];
+export const engagementStandards = {
+  eyebrow: 'Engagement',
+  title: 'What every proposal names',
+  lead: 'The fee follows the crew, the days, and the finish. The proposal states each of them before a date is held.',
+  items: [
+    'A named director, camera, sound, and lighting crew',
+    'Cameras, lighting, and audio from the MAP fleet',
+    'Edit, grade, graphics, and sound completed in-house',
+    'A schedule with the production day and the delivery date',
+    'Masters, and the versions each channel requires',
+    'Logistics for the UAE, Saudi Arabia, Oman, and Qatar',
+  ],
+}
 
-export const filmingServices = [
-  'Multi-camera production',
-  'Drone filming & aerial cinematography',
-  'Green screen and studio filming',
-  'Location scouting and permits',
-  'Live broadcasting integration',
-];
+export const serviceSectors = {
+  eyebrow: 'Sectors',
+  title: 'Organisations that appoint MAP',
+  lead: 'The production standard is consistent. Crew, format, and schedule are set by the brief.',
+  items: [
+    {
+      title: 'Government and public institutions',
+      description: 'Public films, official announcements, and institutional events.',
+    },
+    {
+      title: 'Corporate and financial',
+      description: 'Profiles, communications, and films used in a client or board setting.',
+    },
+    {
+      title: 'Agencies and brand owners',
+      description: 'Campaign production, with strategy and the client relationship retained by the agency.',
+    },
+    {
+      title: 'Conferences and live events',
+      description: 'Coverage and broadcast for rooms that publish a run of show.',
+    },
+    {
+      title: 'Healthcare and education',
+      description: 'Training, medical, and institutional films, produced with a limited crew.',
+    },
+    {
+      title: 'Real estate and hospitality',
+      description: 'Properties, venues, and the organisations that operate them.',
+    },
+    {
+      title: 'Broadcasters',
+      description: 'Crews, units, and pictures prepared for a live or recorded feed.',
+    },
+  ],
+}
 
-export const processSteps = [
-  {
-    step: '01',
-    title: 'Consultation',
-    description: 'Discuss your objectives, audience, and budget with our production team.',
-  },
-  {
-    step: '02',
-    title: 'Pre-Production',
-    description: 'Script development, storyboarding, casting, location scouting, and scheduling.',
-  },
-  {
-    step: '03',
-    title: 'Production',
-    description: 'On-set filming with professional crews and equipment at your chosen location.',
-  },
-  {
-    step: '04',
-    title: 'Post-Production & Delivery',
-    description: 'Editing, grading, and final delivery in your required format and resolution.',
-  },
-];
+export const servicesProcess = {
+  eyebrow: 'Process',
+  title: 'How an engagement proceeds',
+  lead: 'The sequence is confirmed in the proposal before production begins.',
+  steps: [
+    { step: '01', title: 'Brief', description: 'Audience, use, and the date the master is required.' },
+    { step: '02', title: 'Proposal', description: 'Crew, equipment, schedule, and fee, set out in writing.' },
+    { step: '03', title: 'Production', description: 'The shoot or the live day, staffed as the proposal describes.' },
+    { step: '04', title: 'Delivery', description: 'Edit, grade, and the versions each channel requires.' },
+  ],
+}
 
-export const useCases = [
-  'Brand marketing',
-  'Corporate communications',
-  'Product launches',
-  'Event coverage',
-  'Content creation',
-  'Social media',
-  'Training & education',
-  'Documentation',
-];
+export const servicesFaq: FaqItem[] = [
+  {
+    q: 'What does a production cost?',
+    a: 'The fee follows crew, days, locations, and the finishing the programme requires. After a short brief, MAP issues a proposal with the fee and the scope it covers.',
+  },
+  {
+    q: 'How long does a project take?',
+    a: 'A straightforward film is often one to two weeks from brief to delivery. A commercial or a multi-day shoot takes longer. The proposal names the production day and the delivery date before the crew is booked.',
+  },
+  {
+    q: 'Who supplies the crew and the equipment?',
+    a: 'MAP does. Director, camera, sound, lighting, and the equipment are part of the engagement. Post-production is completed by the same organisation.',
+  },
+  {
+    q: 'Can you produce outside Dubai?',
+    a: 'Yes. MAP works across the UAE and regularly in Saudi Arabia, Oman, and Qatar. Permits, freight, and local coordination are included in the plan.',
+  },
+  {
+    q: 'What is delivered?',
+    a: 'A master in the resolution the engagement requires, plus the cuts, ratios, and captions each platform asks for. Broadcast, web, and social can come from the same production.',
+  },
+]
 
-export const videoProductionCapabilities = [
-  {
-    icon: Camera,
-    title: '4K & 8K Production',
-    description: 'High-resolution filming for broadcast, digital, and cinematic deliverables.',
-  },
-  {
-    icon: Monitor,
-    title: 'Multi-Camera Setups',
-    description: 'Professional multi-camera production for events, interviews, and live content.',
-  },
-  {
-    icon: Zap,
-    title: 'Drone & Aerial Cinematography',
-    description: 'Aerial shots and cinematic drone footage for commercials and documentaries.',
-  },
-  {
-    icon: Film,
-    title: 'Slow Motion & High-Speed',
-    description: 'High-speed filming for sports, product demos, and creative sequences.',
-  },
-  {
-    icon: TvMinimal,
-    title: 'Virtual Production & Green Screen',
-    description: 'Studio-based virtual production and chroma key for flexible backgrounds.',
-  },
-  {
-    icon: Video,
-    title: 'Live Streaming Integration',
-    description: 'Multi-platform live streaming alongside recorded content delivery.',
-  },
-];
-
-export const mapVsOthers = [
-  { aspect: 'Equipment quality', map: 'Broadcast-grade 4K', others: 'Consumer or mid-range' },
-  { aspect: 'Regional coverage', map: 'Dubai, UAE, Gulf', others: 'Limited to single city' },
-  { aspect: 'End-to-end service', map: 'Concept to delivery', others: 'Often filming-only' },
-  { aspect: 'Post-production in-house', map: 'Full editing suite', others: 'Often outsourced' },
-  { aspect: 'Turnaround time', map: 'Streamlined workflows', others: 'Variable' },
-];
-
-export const clientTypes = [
-  { icon: Building2, label: 'Government agencies', description: 'Public sector films and event coverage' },
-  { icon: Briefcase, label: 'Corporate brands', description: 'Commercials, brand films, internal comms' },
-  { icon: Presentation, label: 'Event organizers', description: 'Conference filming and live streaming' },
-  { icon: TvMinimal, label: 'Advertising agencies', description: 'Commercial production and content' },
-  { icon: GraduationCap, label: 'Education & NGOs', description: 'Training videos and documentary content' },
-  { icon: Heart, label: 'Healthcare & pharma', description: 'Medical and pharmaceutical filming' },
-  { icon: Landmark, label: 'Real estate & hospitality', description: 'Property and venue showcases' },
-];
-
-export const internalLinks = [
-  { text: 'Commercial Video Production', href: '/services/commercial-video-production' },
-  { text: 'Corporate Video Production', href: '/services/corporate-video-production' },
-  { text: 'Event Video Production', href: '/services/event-video-production' },
-  { text: 'Live Event Production', href: '/services/live-event-production' },
-  { text: 'Studio Video Production', href: '/services/studio-video-production' },
+export const servicesRelated = [
   { text: 'Broadcasting', href: '/broadcasting' },
-  { text: 'Production Services', href: '/services' },
-  { text: 'Equipment Rental', href: '/equipment-rental' },
-  { text: 'Contact Us', href: '/contact' },
-];
+  { text: 'Equipment rental', href: '/equipment-rental' },
+  { text: 'About MAP', href: '/about' },
+  { text: 'Contact', href: '/contact' },
+]
 
-export const faqItems = [
-  {
-    q: 'What does a typical video production in Dubai cost?',
-    a: 'Costs vary based on scope—crew size, equipment, location, and post-production. We provide tailored quotes after discussing your requirements. Contact us for a detailed proposal.',
-  },
-  {
-    q: 'How long does a video production project take?',
-    a: 'Simple projects can be completed in 1–2 weeks. Larger productions (documentaries, multi-day shoots) may take several weeks. We provide timelines during the consultation phase.',
-  },
-  {
-    q: 'Do you provide filming crews and equipment?',
-    a: 'Yes. We supply full production crews (director, cinematographer, sound, lighting) and broadcast-grade equipment. Everything is included in our end-to-end production packages.',
-  },
-  {
-    q: 'Can you film outside Dubai and the UAE?',
-    a: 'Yes. We cover Dubai, UAE, Saudi Arabia, Oman, Qatar, and the wider Gulf region. We handle logistics, permits, and local coordination for regional shoots.',
-  },
-  {
-    q: 'What formats and resolutions do you deliver?',
-    a: 'We deliver in 4K, HD, and broadcast-standard formats. Outputs can be customized for TV, web, social media, and cinema based on your distribution needs.',
-  },
-];
+export const servicesCta = {
+  title: 'Request a proposal',
+  description: 'Share the objective, the audience, and the required date. MAP will reply with a crew, a schedule, and a written proposal.',
+  button: 'Request a proposal',
+  href: '/contact?subject=rfq',
+}
+
+interface ServiceLine {
+  id: string
+  nav: string
+  title: string
+  description: string
+  href: string
+  link: string
+  scope: string[]
+}

@@ -21,7 +21,7 @@ export const footerData: FooterData = {
     { url: 'https://www.youtube.com/@map_production', label: 'YouTube', platform: 'youtube' },
   ],
   contact: {
-    address: 'BS 18, Dubai Studio City, United Arab Emirates',
+    address: 'B29, Dubai Production City, United Arab Emirates',
     phone: '+971 54 544 4499',
     email: 'info@maproduction.ae',
     workingHours: 'Mon - Fri: 9:00 AM - 6:00 PM',

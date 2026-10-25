@@ -6,6 +6,8 @@ import type { Control, FieldPath, FieldValues } from 'react-hook-form';
 import { Button } from '@/components/ui/button';
 import { FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
+import { cn } from '@/lib/utils';
+import { fieldControlClassName, fieldLabelClassName } from '@/components/shared/input/field-styles';
 
 interface PasswordInputProps<T extends FieldValues> {
   control: Control<T>;
@@ -36,7 +38,7 @@ export function PasswordInput<T extends FieldValues>({
       name={name}
       render={({ field, fieldState }) => (
         <FormItem>
-          <FormLabel>{label}</FormLabel>
+          <FormLabel className={fieldLabelClassName}>{label}</FormLabel>
           <FormControl>
             <div className="relative">
               <Input
@@ -44,7 +46,7 @@ export function PasswordInput<T extends FieldValues>({
                 placeholder={placeholder}
                 autoComplete={autoComplete}
                 disabled={disabled}
-                className={`pe-10 ${className || ''}`}
+                className={cn(fieldControlClassName, 'pe-10', className)}
                 aria-invalid={fieldState.error ? 'true' : 'false'}
                 {...field}
                 value={field.value ?? ''}

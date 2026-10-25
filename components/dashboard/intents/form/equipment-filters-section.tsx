@@ -8,13 +8,15 @@ import { CategorySelector } from '@/components/dashboard/common/selectors/catego
 import { BrandSelector } from '@/components/dashboard/common/selectors/brand-selector';
 import { useEquipmentCategoryById } from '@/hooks/api/equipments/equipment-categories/use-equipment-categories';
 import { useEquipmentBrandById } from '@/hooks/api/equipments/equipment-brands/use-equipment-brands';
+import { equipmentOptionLabel } from '@/components/dashboard/equipments/form/equipment-option-label';
+import { fieldLabelClassName } from '@/components/shared/input/field-styles';
 import { EquipmentType } from '@/types/equipments/equipment.enum';
 
 const EQUIPMENT_TYPE_OPTIONS = [
-  { value: '__none__', label: 'None' },
+  { value: '__none__', label: 'Any type' },
   ...Object.values(EquipmentType).map(type => ({
     value: type,
-    label: type.charAt(0).toUpperCase() + type.slice(1),
+    label: equipmentOptionLabel(type),
   })),
 ];
 
@@ -52,41 +54,36 @@ function EquipmentFiltersSection() {
   }, [filterBrandLabel, brandItem, brandIdNum]);
 
   return (
-    <div className="space-y-4 rounded-lg border p-4">
-      <h3 className="text-sm font-medium">Equipment Filters</h3>
-      <p className="text-muted-foreground text-xs">
-        Apply default filters to equipment shown on this intent page. Leave empty for no filter.
-      </p>
-      <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+    <div className="grid grid-cols-1 items-start gap-4 md:grid-cols-2">
         <div>
-          <label className="mb-2 block text-sm font-medium">Category</label>
+          <label className={`mb-2 block ${fieldLabelClassName}`}>Category</label>
           <CategorySelector
             value={categoryIdNum != null ? categoryIdNum : undefined}
             valueLabel={displayCategoryLabel}
             onValueChange={option => {
               if (option) {
-                setValue('filterCategoryId', String(option.value));
-                setValue('filterCategoryLabel', option.label);
+                setValue('filterCategoryId', String(option.value), { shouldDirty: true });
+                setValue('filterCategoryLabel', option.label, { shouldDirty: true });
               } else {
-                setValue('filterCategoryId', '__none__');
-                setValue('filterCategoryLabel', '');
+                setValue('filterCategoryId', '__none__', { shouldDirty: true });
+                setValue('filterCategoryLabel', '', { shouldDirty: true });
               }
             }}
             placeholder="Select category"
           />
         </div>
         <div>
-          <label className="mb-2 block text-sm font-medium">Brand</label>
+          <label className={`mb-2 block ${fieldLabelClassName}`}>Brand</label>
           <BrandSelector
             value={brandIdNum}
             valueLabel={displayBrandLabel}
             onValueChange={option => {
               if (option) {
-                setValue('filterBrandId', String(option.value));
-                setValue('filterBrandLabel', option.label);
+                setValue('filterBrandId', String(option.value), { shouldDirty: true });
+                setValue('filterBrandLabel', option.label, { shouldDirty: true });
               } else {
-                setValue('filterBrandId', '__none__');
-                setValue('filterBrandLabel', '');
+                setValue('filterBrandId', '__none__', { shouldDirty: true });
+                setValue('filterBrandLabel', '', { shouldDirty: true });
               }
             }}
             placeholder="Select brand"
@@ -96,11 +93,10 @@ function EquipmentFiltersSection() {
           control={control}
           name="filterEquipmentType"
           label="Equipment Type"
-          placeholder="Select type"
+          placeholder="Any type"
           options={EQUIPMENT_TYPE_OPTIONS}
         />
-        <CheckboxInput control={control} name="filterIsFeatured" label="Featured only" />
-      </div>
+        <CheckboxInput control={control} name="filterIsFeatured" label="Featured only" description="List featured equipment on this page." />
     </div>
   );
 }

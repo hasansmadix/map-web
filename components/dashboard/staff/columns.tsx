@@ -1,7 +1,7 @@
 'use client';
 
 import type { ColumnDef } from '@tanstack/react-table';
-import { Edit, MoreHorizontal, Trash2, Mail, Calendar, Shield } from 'lucide-react';
+import { Edit, MoreHorizontal, Trash2 } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
@@ -13,6 +13,7 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 
+import { ROLE_LABEL } from '@/components/dashboard/staff/form/staff-form-fields';
 import { Role, type Staff } from '@/types/staff.types';
 import { useStaffMe } from '@/hooks/api/staff/useStaffMe';
 
@@ -27,14 +28,6 @@ function getRoleVariant(role: Staff['role']) {
     default:
       return 'outline';
   }
-}
-
-function formatDate(dateString: string) {
-  return new Date(dateString).toLocaleDateString('en-US', {
-    year: 'numeric',
-    month: 'short',
-    day: 'numeric',
-  });
 }
 
 function getStaffInitials(staff: Staff) {
@@ -56,7 +49,7 @@ export function useStaffColumns(opts: {
     // Staff info
     {
       id: 'staff',
-      header: 'Staff Name',
+      header: 'Person',
       accessorKey: 'name',
       enableSorting: true,
       enableGlobalFilter: true,
@@ -64,32 +57,16 @@ export function useStaffColumns(opts: {
         const staff = row.original;
         return (
           <div className="flex items-center gap-3">
-            <Avatar className="h-10 w-10">
+            <Avatar className="size-11 rounded-none">
               <AvatarImage src={staff.image || ''} alt={staff.name} />
-              <AvatarFallback className="bg-primary/10 text-primary">
+              <AvatarFallback className="bg-primary/10 text-primary rounded-none">
                 {getStaffInitials(staff)}
               </AvatarFallback>
             </Avatar>
-            <div>
+            <div className="min-w-0">
               <div className="font-medium">{staff.name}</div>
-              <div className="text-muted-foreground text-sm">ID: {staff.id}</div>
+              <div className="text-muted-foreground truncate text-xs">{staff.email}</div>
             </div>
-          </div>
-        );
-      },
-    },
-    // Email
-    {
-      id: 'email',
-      header: 'Email',
-      accessorKey: 'email',
-      enableSorting: true,
-      cell: ({ row }) => {
-        const staff = row.original;
-        return (
-          <div className="flex items-center gap-2">
-            <Mail className="text-muted-foreground h-4 w-4" />
-            <span className="text-sm">{staff.email}</span>
           </div>
         );
       },
@@ -102,25 +79,9 @@ export function useStaffColumns(opts: {
       cell: ({ row }) => {
         const staff = row.original;
         return (
-          <div className="flex items-center gap-2">
-            <Shield className="text-muted-foreground h-4 w-4" />
-            <Badge variant={getRoleVariant(staff.role)}>{staff.role}</Badge>
-          </div>
+          <Badge variant={getRoleVariant(staff.role)}>{ROLE_LABEL[staff.role] || staff.role}</Badge>
         );
       },
-    },
-    // Created date
-    {
-      id: 'createdAt',
-      header: 'Created At',
-      enableSorting: true,
-      accessorKey: 'createdAt',
-      cell: ({ row }) => (
-        <div className="flex items-center gap-2">
-          <Calendar className="text-muted-foreground h-4 w-4" />
-          <span className="text-sm">{formatDate(row.original.createdAt)}</span>
-        </div>
-      ),
     },
     // Actions
     {
@@ -138,6 +99,7 @@ export function useStaffColumns(opts: {
         }
 
         return (
+          <div onClick={event => event.stopPropagation()}>
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <Button variant="ghost" className="h-8 w-8 p-0">
@@ -155,6 +117,7 @@ export function useStaffColumns(opts: {
               </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
+          </div>
         );
       },
     },

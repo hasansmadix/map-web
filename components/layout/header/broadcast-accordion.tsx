@@ -4,23 +4,31 @@ import * as React from 'react';
 import Link from 'next/link';
 import { ChevronDown, Radio } from 'lucide-react';
 import { cn } from '@/lib/utils';
-import { BroadcastType } from '@/types/broadcasts/broadcast.enums';
 import { SheetClose } from '@/components/ui/sheet';
 
-interface MobileBroadcastAccordionProps {
-  onLinkClick?: () => void;
-}
-
-const broadcastTypes = [
-  { type: BroadcastType.OBVAN, label: 'OBVAN', description: 'Outside Broadcast Vans for live events' },
+const groups = [
   {
-    type: BroadcastType.FLIGHT_CASE,
-    label: 'Flight Cases',
-    description: 'Portable broadcast equipment cases',
-  }
-];
+    label: 'Services',
+    items: [
+      { label: 'Overview', href: '/broadcasting' },
+      { label: 'Outside broadcast', href: '/broadcasting/outside-broadcast' },
+      { label: 'Live production', href: '/broadcasting/live-production' },
+      { label: 'Sports', href: '/broadcasting/sports-broadcasting' },
+      { label: 'Transmission', href: '/broadcasting/transmission' },
+      { label: 'Technical crew', href: '/broadcasting/technical-crew' },
+    ],
+  },
+  {
+    label: 'Systems',
+    items: [
+      { label: 'OB vans', href: '/broadcasting/ob-vans' },
+      { label: 'Flypacks', href: '/broadcasting/flypacks' },
+      { label: 'Studios', href: '/broadcasting/studios' },
+    ],
+  },
+]
 
-export function MobileBroadcastAccordion({ onLinkClick }: MobileBroadcastAccordionProps) {
+export function MobileBroadcastAccordion({ onLinkClick }: { onLinkClick?: () => void }) {
   const [isOpen, setIsOpen] = React.useState(false);
 
   const handleLinkClick = () => {
@@ -62,52 +70,24 @@ export function MobileBroadcastAccordion({ onLinkClick }: MobileBroadcastAccordi
           isOpen ? 'max-h-[1000px] opacity-100' : 'max-h-0 opacity-0',
         )}
       >
-        <div className="space-y-0.5 pt-1 pr-2 pl-4">
-          {broadcastTypes.map((broadcast, index) => (
-            <SheetClose key={broadcast.type} asChild>
-              <Link
-                href={`/broadcasts?type=${broadcast.type}`}
-                onClick={handleLinkClick}
-                className={cn(
-                  'group flex items-center gap-3 rounded-md px-3 py-2.5',
-                  'text-sm leading-6 font-medium',
-                  'hover:bg-accent hover:text-primary',
-                  'hover:border-accent-foreground/10 border border-transparent',
-                  'transition-all duration-150',
-                  'focus-visible:ring-primary/20 focus-visible:ring-2 focus-visible:outline-none',
-                )}
-              >
-                <div className="bg-muted-foreground/40 group-hover:bg-primary h-1.5 w-1.5 rounded-full transition-colors" />
-                <div className="min-w-0 flex-1">
-                  <div className="font-medium">{broadcast.label}</div>
-                </div>
-              </Link>
-            </SheetClose>
+        <div className="space-y-3 pt-1 pr-2 pl-4">
+          {groups.map(group => (
+            <div key={group.label}>
+              <p className="text-muted-foreground px-3 py-1 text-[11px] font-medium tracking-[0.16em] uppercase">{group.label}</p>
+              {group.items.map(item => (
+                <SheetClose key={item.href} asChild>
+                  <Link
+                    href={item.href}
+                    onClick={handleLinkClick}
+                    className="hover:bg-accent hover:text-primary flex items-center gap-3 rounded-md px-3 py-2.5 text-sm font-medium"
+                  >
+                    <span className="bg-muted-foreground/40 h-1.5 w-1.5 rounded-full" />
+                    {item.label}
+                  </Link>
+                </SheetClose>
+              ))}
+            </div>
           ))}
-          <div className="border-border/50 mt-1.5 border-t pt-1.5">
-            <SheetClose asChild>
-              <Link
-                href="/broadcasts"
-                onClick={handleLinkClick}
-                className={cn(
-                  'group flex items-center gap-3 rounded-md px-3 py-2.5',
-                  'text-sm leading-6 font-semibold',
-                  'hover:bg-accent hover:text-primary',
-                  'hover:border-accent-foreground/10 border border-transparent',
-                  'transition-all duration-150',
-                  'focus-visible:ring-primary/20 focus-visible:ring-2 focus-visible:outline-none',
-                )}
-              >
-                <div className="bg-primary/60 group-hover:bg-primary h-1.5 w-1.5 rounded-full transition-colors" />
-                <div className="min-w-0 flex-1">
-                  <div className="font-semibold">See all</div>
-                  <p className="text-muted-foreground mt-0.5 line-clamp-1 text-xs font-normal">
-                    Browse all broadcasts
-                  </p>
-                </div>
-              </Link>
-            </SheetClose>
-          </div>
         </div>
       </div>
     </div>

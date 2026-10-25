@@ -76,53 +76,50 @@ export function IntentEquipmentFilters({ categories, brands }: IntentEquipmentFi
   };
 
   return (
-    <div className="py-4">
-      {activeFiltersCount > 0 && (
-        <div className="mb-3 flex items-center justify-end">
-          <Button
-            variant="ghost"
-            size="sm"
-            onClick={clearAllFilters}
-            className="text-muted-foreground hover:bg-accent hover:text-foreground"
-          >
-            <X className="mr-1.5 h-4 w-4" />
-            Clear All
-          </Button>
-        </div>
-      )}
-      <div className="space-y-3">
-        <div className="grid grid-cols-1 gap-3 md:grid-cols-2">
-          <EquipmentsAutocomplete
-            placeholder="Search equipment..."
-            value={currentSearch}
-            onValueChange={value => updateParams({ search: value })}
-            className="h-10 w-full rounded-xl"
-          />
-          <div className="grid grid-cols-1 gap-3 sm:grid-cols-3">
-            <FilterSelect
-              placeholder="Select Category"
-              value={currentCategory}
-              onValueChange={value => updateParams({ category: value === 'all' ? '' : value })}
-              options={categoryOptions}
-              className="h-10 w-full"
-            />
-            <FilterSelect
-              placeholder="Select Type"
-              value={currentType}
-              onValueChange={value => updateParams({ equipmentType: value === 'all' ? '' : value })}
-              options={typeOptions}
-              className="h-10 w-full"
-            />
-            <FilterSelect
-              placeholder="Select Brand"
-              value={currentBrand}
-              onValueChange={value => updateParams({ brand: value === 'all' ? '' : value })}
-              options={brandOptions}
-              className="h-10 w-full"
-            />
-          </div>
-        </div>
+    <div className="flex flex-col gap-3 py-3 lg:flex-row lg:items-center">
+      <EquipmentsAutocomplete
+        placeholder="Search the catalogue"
+        value={currentSearch}
+        onValueChange={value => updateParams({ search: value })}
+        className="h-11 w-full rounded-none lg:w-72"
+      />
+      <div className="grid flex-1 grid-cols-1 gap-3 sm:grid-cols-3">
+        <FilterSelect
+          placeholder="Category"
+          value={currentCategory}
+          onValueChange={value => updateParams({ category: value === 'all' ? '' : value })}
+          options={categoryOptions}
+          className="h-11 w-full rounded-none"
+          aria-label="Category"
+        />
+        <FilterSelect
+          placeholder="Type"
+          value={currentType}
+          onValueChange={value => updateParams({ equipmentType: value === 'all' ? '' : value })}
+          options={typeOptions}
+          className="h-11 w-full rounded-none"
+          aria-label="Type"
+        />
+        <FilterSelect
+          placeholder="Brand"
+          value={currentBrand}
+          onValueChange={value => updateParams({ brand: value === 'all' ? '' : value })}
+          options={brandOptions}
+          className="h-11 w-full rounded-none"
+          aria-label="Brand"
+        />
       </div>
+      {activeFiltersCount > 0 ? (
+        <Button
+          variant="ghost"
+          size="sm"
+          onClick={clearAllFilters}
+          className="text-muted-foreground hover:text-foreground h-11 shrink-0 px-3 text-[11px] font-medium tracking-[0.14em] uppercase"
+        >
+          <X className="size-3.5" />
+          Clear
+        </Button>
+      ) : null}
     </div>
   );
 }

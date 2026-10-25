@@ -1,17 +1,15 @@
 import { type Metadata } from 'next';
+import { PageHeader } from '@/components/dashboard/page-header';
 import EquipmentBrandsTable from '@/components/dashboard/equipments/equipment-brands/equipment-brands-table';
 
 export const metadata: Metadata = {
-  title: 'Equipment Brands Management',
+  title: 'Brands',
 };
 
 export default async function EquipmentBrandsPage() {
   return (
-    <div className="space-y-6 p-4">
-      <header>
-        <h1 className="text-3xl font-bold tracking-tight">Equipment Brands Management</h1>
-        <p className="text-muted-foreground">Manage your equipment brands</p>
-      </header>
+    <div className="map-page">
+      <PageHeader title="Brands" description="The makers behind the hire list." />
 
       <EquipmentBrandsTable />
     </div>

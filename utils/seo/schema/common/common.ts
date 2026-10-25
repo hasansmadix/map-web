@@ -39,7 +39,7 @@ export async function generateOrganizationSchema(): Promise<Organization> {
     email: 'info@maproduction.ae',
     address: {
       '@type': 'PostalAddress',
-      streetAddress: 'BS 18, Dubai Studio City',
+      streetAddress: 'B29, Dubai Production City',
       addressLocality: 'Dubai',
       addressRegion: 'Dubai',
       addressCountry: 'AE',

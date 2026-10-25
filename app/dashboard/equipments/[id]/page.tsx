@@ -1,10 +1,7 @@
-import { ArrowLeft } from 'lucide-react';
-import Link from 'next/link';
-import { Button } from '@/components/ui/button';
 import EditEquipmentForm from '@/components/dashboard/equipments/form/edit-equipment-from';
-
-import { type Metadata } from 'next';
 import EquipmentView from '@/components/dashboard/equipments/view/equipment-view';
+import { PageHeader } from '@/components/dashboard/page-header';
+import { type Metadata } from 'next';
 
 interface EditEquipmentPageProps {
   params: Promise<{
@@ -22,29 +19,20 @@ export const metadata: Metadata = {
 export default async function EditEquipmentPage({ params, searchParams }: EditEquipmentPageProps) {
   const { id } = await params;
   const { view } = await searchParams;
+  const isView = view === '1';
 
   return (
-    <div className="space-y-6 p-4">
-      <header className="flex items-center space-x-4">
-        <Button variant="outline" size="icon" asChild>
-          <Link href="/dashboard/equipments">
-            <ArrowLeft className="h-4 w-4 rtl:rotate-180" />
-          </Link>
-        </Button>
-        {view === '1' ? (
-          <div>
-            <h1 className="text-3xl font-bold tracking-tight">View Equipment</h1>
-            <p className="text-muted-foreground">View equipment information.</p>
-          </div>
-        ) : (
-          <div>
-            <h1 className="text-3xl font-bold tracking-tight">Edit Equipment</h1>
-            <p className="text-muted-foreground">Update equipment information.</p>
-          </div>
-        )}
-      </header>
-
-      {view === '1' ? <EquipmentView equipmentId={id} /> : <EditEquipmentForm equipmentId={id} />}
+    <div className="map-page">
+      {isView ? null : (
+        <PageHeader
+          title="Edit equipment"
+          description="Update the listing, the specifications, and the images."
+          backHref={`/dashboard/equipments/${id}?view=1`}
+          backLabel="Record"
+          compact
+        />
+      )}
+      {isView ? <EquipmentView equipmentId={id} /> : <EditEquipmentForm equipmentId={id} />}
     </div>
   );
 }

@@ -1,49 +1,36 @@
 'use client';
 
-import { useFormContext } from 'react-hook-form';
-import { TextInput } from '@/components/shared/input/TextInput';
-import { TextAreaInput } from '@/components/shared/input/TextAreaInput';
-import { SelectInput } from '@/components/shared/input/SelectInput';
-import { CheckboxInput } from '@/components/shared/input/CheckboxInput';
+import ActiveField from '@/components/dashboard/equipments/form/active-field';
+import { equipmentOptions } from '@/components/dashboard/equipments/form/equipment-option-label';
 import { NumericInput } from '@/components/shared/input/NumericInput';
+import { SelectInput } from '@/components/shared/input/SelectInput';
+import { TextAreaInput } from '@/components/shared/input/TextAreaInput';
+import { TextInput } from '@/components/shared/input/TextInput';
 import { EquipmentType } from '@/types/equipments/equipment.enum';
+import { useFormContext } from 'react-hook-form';
+
+const typeOptions = equipmentOptions(Object.values(EquipmentType));
 
 function EquipmentCategoryFormFields() {
   const { control } = useFormContext();
 
-  const equipmentTypeOptions = Object.values(EquipmentType).map(type => ({
-    value: type,
-    label: type.charAt(0).toUpperCase() + type.slice(1),
-  }));
-
   return (
-    <>
-      <div className="grid grid-cols-1 items-start gap-4 md:grid-cols-2">
-        <TextInput control={control} name="name" label="Name" placeholder="Enter category name" />
-
-        <TextInput control={control} name="slug" label="Slug" placeholder="Enter slug" />
-
-        <SelectInput
-          control={control}
-          name="type"
-          label="Type"
-          placeholder="Select type"
-          options={equipmentTypeOptions}
-        />
-
-        <NumericInput control={control} name="order" label="Order" placeholder="Enter order" />
+    <div className="space-y-4">
+      <div className="grid grid-cols-1 items-start gap-4 sm:grid-cols-2">
+        <TextInput control={control} name="name" label="Name" placeholder="Cinema cameras" />
+        <TextInput control={control} name="slug" label="Slug" placeholder="cinema-cameras" />
+        <SelectInput control={control} name="type" label="Type" placeholder="Select a type" options={typeOptions} />
+        <NumericInput control={control} name="order" label="Order" placeholder="1" />
       </div>
-
       <TextAreaInput
         control={control}
         name="description"
         label="Description"
-        placeholder="Enter description"
-        className="min-h-[100px]"
+        placeholder="What belongs in this group"
+        rows={4}
       />
-
-      <CheckboxInput control={control} name="isActive" label="Active" />
-    </>
+      <ActiveField description="Shown when someone filters the hire catalogue." />
+    </div>
   );
 }
 

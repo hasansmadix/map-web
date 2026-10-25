@@ -21,16 +21,16 @@ const socialsComponents = {
 const Footer = () => {
 
   return (
-    <footer className="text-card-foreground bg-gray-900">
+    <footer className="bg-foreground text-background">
       {/* Main Footer */}
       <div className="px-4 pt-24 pb-8">
-        <div className="mx-auto max-w-7xl">
+        <div className="mx-auto max-w-[96rem]">
           {/* Top Section */}
-          <div className="grid gap-12 lg:grid-cols-3">
+          <div className="grid gap-12 lg:grid-cols-4">
             {/* Company Info */}
             <div className="space-y-6">
               <div className="flex items-center space-x-3">
-                <Logo width={150} height={150} />
+                <Logo width={150} height={150} className="brightness-0 invert" />
               </div>
 
               <p className="text-sm leading-relaxed text-white/80">{footerData.siteDescription}</p>
@@ -54,76 +54,58 @@ const Footer = () => {
 
             {/* Services */}
             <div>
-              <h3 className="mb-6 text-lg font-semibold text-white">Services</h3>
+              <h3 className="mb-6 text-lg font-semibold text-white">Production</h3>
               <ul className="space-y-4">
                 <li>
                   <Link
-                    href="/services"
+                    href="/production"
                     prefetch={false}
-                    className="group flex items-center text-sm text-white/80 transition-colors hover:text-white"
+                    className="group flex items-center text-sm text-white/80 transition-colors hover:text-primary"
                   >
-                    Video Production Dubai
+                    Overview
                   </Link>
                 </li>
                 <li>
                   <Link
-                    href="/services"
+                    href="/production/commercial-video-production"
                     prefetch={false}
-                    className="group flex items-center text-sm text-white/80 transition-colors hover:text-white"
-                  >
-                    Filming Services
-                  </Link>
-                </li>
-                <li>
-                  <Link
-                    href="/services"
-                    prefetch={false}
-                    className="group flex items-center text-sm text-white/80 transition-colors hover:text-white"
-                  >
-                    Production Company
-                  </Link>
-                </li>
-                <li>
-                  <Link
-                    href="/services/commercial-video-production"
-                    prefetch={false}
-                    className="group flex items-center text-sm text-white/80 transition-colors hover:text-white"
+                    className="group flex items-center text-sm text-white/80 transition-colors hover:text-primary"
                   >
                     Commercial Video Production
                   </Link>
                 </li>
                 <li>
                   <Link
-                    href="/services/corporate-video-production"
+                    href="/production/corporate-video-production"
                     prefetch={false}
-                    className="group flex items-center text-sm text-white/80 transition-colors hover:text-white"
+                    className="group flex items-center text-sm text-white/80 transition-colors hover:text-primary"
                   >
                     Corporate Video Production
                   </Link>
                 </li>
                 <li>
                   <Link
-                    href="/services/event-video-production"
+                    href="/production/event-video-production"
                     prefetch={false}
-                    className="group flex items-center text-sm text-white/80 transition-colors hover:text-white"
+                    className="group flex items-center text-sm text-white/80 transition-colors hover:text-primary"
                   >
                     Event Video Production
                   </Link>
                 </li>
                 <li>
                   <Link
-                    href="/services/live-event-production"
+                    href="/production/live-event-production"
                     prefetch={false}
-                    className="group flex items-center text-sm text-white/80 transition-colors hover:text-white"
+                    className="group flex items-center text-sm text-white/80 transition-colors hover:text-primary"
                   >
                     Live Event Production
                   </Link>
                 </li>
                 <li>
                   <Link
-                    href="/services/studio-video-production"
+                    href="/production/studio-video-production"
                     prefetch={false}
-                    className="group flex items-center text-sm text-white/80 transition-colors hover:text-white"
+                    className="group flex items-center text-sm text-white/80 transition-colors hover:text-primary"
                   >
                     Studio Video Production
                   </Link>
@@ -131,7 +113,25 @@ const Footer = () => {
               </ul>
             </div>
 
-            {/* Quick Links */}
+            <div>
+              <h3 className="mb-6 text-lg font-semibold text-white">Broadcasting</h3>
+              <ul className="space-y-4">
+                {[
+                  { href: '/broadcasting', name: 'Overview' },
+                  { href: '/broadcasting/outside-broadcast', name: 'Outside broadcast' },
+                  { href: '/broadcasting/ob-vans', name: 'OB vans' },
+                  { href: '/broadcasting/flypacks', name: 'Flypacks' },
+                  { href: '/broadcasting/studios', name: 'Studios' },
+                ].map(item => (
+                  <li key={item.href}>
+                    <Link href={item.href} prefetch={false} className="group flex items-center text-sm text-white/80 transition-colors hover:text-primary">
+                      {item.name}
+                    </Link>
+                  </li>
+                ))}
+              </ul>
+            </div>
+
             <div>
               <h3 className="mb-6 text-lg font-semibold text-white">Quick Links</h3>
               <ul className="space-y-4">
@@ -145,8 +145,8 @@ const Footer = () => {
                     name: 'Equipment',
                   },
                   {
-                    href: '/services',
-                    name: 'Services',
+                    href: '/production',
+                    name: 'Production',
                   },
                   {
                     href: '/about',
@@ -165,7 +165,7 @@ const Footer = () => {
                     <Link
                       href={item.href}
                       prefetch={false}
-                      className="group flex items-center text-sm text-white/80 transition-colors hover:text-white"
+                      className="group flex items-center text-sm text-white/80 transition-colors hover:text-primary"
                     >
                       {item.name}
                     </Link>
@@ -234,10 +234,10 @@ const Footer = () => {
 
               <div className="flex items-center space-x-6">
                 <div className="flex items-center space-x-6 text-sm">
-                  <Link href="/privacy" prefetch={false} className="text-white/80 transition-colors hover:text-white">
+                  <Link href="/legal/privacy" prefetch={false} className="text-white/80 transition-colors hover:text-primary">
                     Privacy Policy
                   </Link>
-                  <Link href="/terms" prefetch={false} className="text-white/80 transition-colors hover:text-white">
+                  <Link href="/legal/terms" prefetch={false} className="text-white/80 transition-colors hover:text-primary">
                     Terms of Service
                   </Link>
                 </div>
@@ -249,7 +249,7 @@ const Footer = () => {
 
       {/* Watermark */}
       <div className="border-border/5 border-t px-4 py-6">
-        <div className="mx-auto max-w-7xl text-center">
+        <div className="mx-auto max-w-[96rem] text-center">
           <p className="text-sm text-white/80">Leading Production and Broadcasting Solutions since 2015</p>
         </div>
       </div>

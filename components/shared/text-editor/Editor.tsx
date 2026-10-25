@@ -2,6 +2,7 @@
 
 import 'suneditor/dist/css/suneditor.min.css';
 import dynamic from 'next/dynamic';
+import { useEffect, useRef } from 'react';
 import './editor.css';
 import { EditorSkeleton } from './EditorSkeleton';
 
@@ -32,10 +33,18 @@ export default function Editor({
   placeholder,
   language = 'en',
 }: EditorProps) {
+  const isReady = useRef(false);
+
+  useEffect(() => {
+    const frame = requestAnimationFrame(() => {
+      isReady.current = true;
+    });
+    return () => cancelAnimationFrame(frame);
+  }, []);
+
   const handleChange = (content: string) => {
-    if (!readOnly) {
-      onChange(content);
-    }
+    if (readOnly || !isReady.current || content === value) return;
+    onChange(content);
   };
 
   const isRTL = isRTLLanguage(language);

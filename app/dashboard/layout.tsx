@@ -20,15 +20,17 @@ export default async function DashboardLayout({ children }: { children: React.Re
     <RouteGuard>
       <SidebarProvider>
         <AppSidebar side="left" />
-        <SidebarInset className="m-0! h-full max-w-full overflow-x-hidden rounded-none! border-none! p-0! shadow-none">
-          <header className="flex h-16 w-full shrink-0 items-center justify-between gap-2 px-4 transition-[width,height] ease-linear group-has-data-[collapsible=icon]/sidebar-wrapper:h-12">
-            <div className="flex items-center gap-2">
+        <SidebarInset className="m-0! h-full max-w-full min-w-0 overflow-x-clip rounded-none! border-none! p-0! shadow-none">
+          <header className="bg-background/85 sticky top-0 z-30 flex h-(--app-header-height) w-full shrink-0 items-center justify-between gap-2 border-b px-4 backdrop-blur-md md:px-8">
+            <div className="flex min-w-0 flex-1 items-center gap-2">
               <SidebarTrigger className="-me-1" />
               <Separator orientation="vertical" className="me-2 data-[orientation=vertical]:h-4" />
               <DashboardBreadcrumb />
             </div>
           </header>
-          <div className="flex flex-1 flex-col gap-4 p-4 pt-0">{children}</div>
+          <div className="mx-auto flex w-full max-w-[1600px] flex-1 flex-col gap-4 px-4 pt-6 pb-4 md:px-8 md:pt-8">
+            {children}
+          </div>
         </SidebarInset>
       </SidebarProvider>
     </RouteGuard>

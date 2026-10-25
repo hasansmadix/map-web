@@ -29,11 +29,12 @@ export default async function ContactPage() {
       />
 
       <PageHero
-        title="Contact Us"
-        description="Get in touch with MAP to discuss your media project, request a quote, or start a creative collaboration. We're here to help across Dubai, UAE, and the Gulf."
+        eyebrow="Enquiries"
+        title="Contact"
+        description="Discuss a production, request a proposal, or speak with the team responsible for your account. MAP responds to enquiries across Dubai, the UAE, and the Gulf."
         buttons={[
           { text: 'Request Quote', href: '/contact?subject=rfq' },
-          { text: 'View Services', href: '/services', variant: 'outline' },
+          { text: 'Production', href: '/production', variant: 'outline' },
         ]}
         breadcrumbs={[
           { label: 'Home', href: '/' },
