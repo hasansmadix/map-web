@@ -52,7 +52,7 @@ export const equipmentsService = {
 
   // Public Services
   async getAllPublic(params: EquipmentParams = {}, opts?: RequestOpts): Promise<ApiResponse<IEquipment[]>> {
-    const res = await ApiService.get<IEquipment[]>(`${BASE}/published${toQS(params)}`, opts);
+    const res = await ApiService.get<IEquipment[]>(`${BASE}/published${toQS(params)}`, opts, true);
     return res;
   },
 

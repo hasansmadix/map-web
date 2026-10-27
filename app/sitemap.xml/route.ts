@@ -1,68 +1,39 @@
-import { generateBroadcastUrls, generateIntentUrls, productionPaths } from '@/utils/seo/sitemap/sitemap-utils';
-import { NextResponse } from 'next/server';
+import { absoluteUrl, escapeXml, maxLocsPerSitemap, sitemapEntities, sitemapPage } from '@/utils/seo/sitemap/sitemap-utils'
+import { NextResponse } from 'next/server'
 
-export const dynamic = 'force-dynamic';
-
-const siteURL = process.env.NEXT_PUBLIC_SITE_URL!;
-const maxLocsPerSitemap = Number.parseInt(process.env.MAX_LOCS_PER_SITEMAP || '1000');
+export const dynamic = 'force-dynamic'
 
 export async function GET() {
-  const sitemapIndexXml = await generateSitemapIndex();
+  const sitemapIndexXml = await generateSitemapIndex()
 
   return new NextResponse(sitemapIndexXml, {
     headers: {
-      'Content-Type': 'application/xml',
+      'Content-Type': 'application/xml; charset=utf-8',
+      'X-Content-Type-Options': 'nosniff',
     },
-  });
+  })
 }
 
 async function generateSitemapIndex(): Promise<string> {
-  const sitemaps = await generateSitemapEntities();
+  const sitemaps = []
 
-  const sitemapsXml = sitemaps
-    .flatMap(sitemap =>
-      Array.from(
-        { length: sitemap.count },
-        (_, id) => `
+  for (const entity of sitemapEntities) {
+    const page = await sitemapPage(entity, 1)
+    const count = page?.count ?? 0
+    if (count < 1) continue
+
+    const pages = Math.ceil(count / maxLocsPerSitemap)
+    for (let id = 1; id <= pages; id += 1) {
+      sitemaps.push(`
           <sitemap>
-            <loc>${siteURL}/sitemap/${sitemap.entity}/${id + 1}.xml</loc>
+            <loc>${escapeXml(absoluteUrl(`/sitemap/${entity}/${id}.xml`))}</loc>
             <lastmod>${new Date().toISOString()}</lastmod>
-          </sitemap>
-        `,
-      ),
-    )
-    .join('');
+          </sitemap>`)
+    }
+  }
 
   return `<?xml version="1.0" encoding="UTF-8"?>
   <sitemapindex xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-    ${sitemapsXml}
-  </sitemapindex>`;
-}
-
-async function generateSitemapEntities() {
-  const { count: broadcastUrlsCount } = await generateBroadcastUrls();
-  const { count: intentUrlsCount } = await generateIntentUrls();
-
-  return [
-    {
-      entity: 'broadcasts',
-      count: Math.ceil(broadcastUrlsCount / maxLocsPerSitemap),
-    },
-    {
-      entity: 'intents',
-      count: Math.ceil(intentUrlsCount / maxLocsPerSitemap),
-    },
-    {
-      entity: 'production',
-      count: Math.ceil(productionPaths.length / maxLocsPerSitemap),
-    },
-    {
-      entity: 'blog',
-      count: Math.ceil(1 / maxLocsPerSitemap),
-    },
-    {
-      entity: 'static',
-      count: 1,
-    },
-  ];
+    ${sitemaps.join('')}
+  </sitemapindex>`
 }

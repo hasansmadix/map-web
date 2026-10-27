@@ -52,7 +52,7 @@ export const intentsService = {
 
   /** Public: fetch all slugs for sitemap (no auth required) */
   async getAllSlugsForSitemap(opts?: RequestOpts): Promise<{ slug: string; type: string; updatedAt: string }[]> {
-    const res = await ApiService.get<{ slug: string; type: string; updatedAt: string }[]>(`${BASE}/slugs`, opts);
+    const res = await ApiService.get<{ slug: string; type: string; updatedAt: string }[]>(`${BASE}/slugs`, opts, true);
     if (Array.isArray(res?.data)) return res.data;
     if (Array.isArray(res)) return res as unknown as { slug: string; type: string; updatedAt: string }[];
     return [];
